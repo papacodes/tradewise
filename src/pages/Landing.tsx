@@ -3,11 +3,12 @@ import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { TrendingUp, BarChart3, Shield, Zap, ArrowRight, Menu, X, User, LogOut } from 'lucide-react';
 import { useAuth } from '../hooks/useAuth';
-import { clearAllCache } from '../hooks/useSupabaseCache';
+import { useCacheManager } from '../hooks/useSimpleCache';
 
 export const Landing = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { user, signOut } = useAuth();
+  const { clearAll } = useCacheManager();
 
   // Initialize page without clearing authentication storage
   useEffect(() => {
@@ -18,7 +19,7 @@ export const Landing = () => {
         console.log('🎯 Landing page: Initializing clean cache state (AUTH-SAFE VERSION)...');
         
         // Only clear in-memory cache, preserve authentication storage
-        clearAllCache();
+        clearAll();
         
         console.log('✅ Landing page initialized with clean cache state (auth preserved)');
       } catch (error) {

@@ -2,8 +2,9 @@ import React, { createContext, useEffect, useState } from 'react';
 import { User, Session, AuthError } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
 import { clearAllCaches } from '../utils/cacheManager';
-import { clearAllCache } from '../hooks/useSupabaseCache';
-import { cacheRefreshService } from '../utils/cacheRefreshService';
+import { useCacheManager } from '../hooks/useSimpleCache';
+import { useAuthFallback } from '../hooks/useAuthFallback';
+import { AuthErrorCard } from '../components/AuthErrorCard';
 
 interface AuthContextType {
   user: User | null;
@@ -13,6 +14,7 @@ interface AuthContextType {
   signIn: (email: string, password: string) => Promise<{ error: AuthError | null }>;
   signOut: () => Promise<void>;
   resetPassword: (email: string) => Promise<{ error: AuthError | null }>;
+  showAuthError: (reason: string) => void;
 }
 
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
@@ -21,6 +23,16 @@ const AuthProviderComponent: React.FC<{ children: React.ReactNode }> = ({ childr
   const [user, setUser] = useState<User | null>(null);
   const [session, setSession] = useState<Session | null>(null);
   const [loading, setLoading] = useState(true);
+  
+  const {
+    isOpen: authErrorOpen,
+    reason: authErrorReason,
+    retryCount,
+    showFallback: showAuthError,
+    hideFallback: hideAuthError,
+    handleRetry: handleAuthRetry
+  } = useAuthFallback();
+  const { clearAll } = useCacheManager();
 
   useEffect(() => {
     console.log('🔄 AuthContext: Initializing authentication...');
@@ -43,6 +55,7 @@ const AuthProviderComponent: React.FC<{ children: React.ReactNode }> = ({ childr
         console.log('✅ AuthContext: Initial loading complete, loading set to false');
       } catch (error) {
         console.error('💥 AuthContext: Unexpected error getting session:', error);
+        showAuthError('Failed to get session');
         setLoading(false);
       }
     };
@@ -62,13 +75,6 @@ const AuthProviderComponent: React.FC<{ children: React.ReactNode }> = ({ childr
         // Create or update profile when user signs up or signs in
         if (event === 'SIGNED_IN' && session?.user) {
           await createOrUpdateProfile(session.user);
-          // Initialize cache refresh strategies for the user
-          cacheRefreshService.initializeDefaultStrategies(session.user.id);
-        }
-        
-        // Clear refresh strategies when user signs out
-        if (event === 'SIGNED_OUT') {
-          cacheRefreshService.clearRefreshAttempts();
         }
       }
     );
@@ -137,19 +143,29 @@ const AuthProviderComponent: React.FC<{ children: React.ReactNode }> = ({ childr
 
   const signIn = async (email: string, password: string) => {
     console.log('🔐 AuthContext: Attempting sign in...');
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email,
-      password,
-    });
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email,
+        password,
+      });
 
-    if (error) {
-      console.error('❌ AuthContext: Sign in error:', error);
-      return { error };
+      if (error) {
+        console.error('❌ AuthContext: Sign in error:', error);
+        if (error.message.includes('Invalid login credentials')) {
+          return { error };
+        } else {
+          showAuthError('Authentication failed');
+        }
+        return { error };
+      }
+
+      console.log('✅ AuthContext: Sign in successful, session:', data.session ? 'exists' : 'none');
+      return { error: null };
+    } catch (error) {
+      console.error('💥 AuthContext: Unexpected sign in error:', error);
+      showAuthError('Network error during sign in');
+      return { error: error as AuthError };
     }
-
-    console.log('✅ AuthContext: Sign in successful, session:', data.session ? 'exists' : 'none');
-    // The global auth state listener will handle updating the user/session state
-    return { error: null };
   };
 
   const signOut = async () => {
@@ -158,7 +174,7 @@ const AuthProviderComponent: React.FC<{ children: React.ReactNode }> = ({ childr
       
       // Clear all caches before signing out
       console.log('🧹 Clearing caches during logout...');
-      clearAllCache(); // Clear in-memory cache
+      clearAll(); // Clear in-memory cache
       await clearAllCaches({ skipVersionCheck: true, skipReload: true, logOperations: true }); // Clear browser storage
       
       // Use 'local' scope to avoid ERR_ABORTED errors
@@ -187,6 +203,15 @@ const AuthProviderComponent: React.FC<{ children: React.ReactNode }> = ({ childr
     return { error };
   };
 
+  const handleRelogin = () => {
+    hideAuthError();
+    // Clear all state and redirect to login
+    setUser(null);
+    setSession(null);
+    clearAll();
+    window.location.href = '/login';
+  };
+
   const value = {
     user,
     session,
@@ -195,19 +220,23 @@ const AuthProviderComponent: React.FC<{ children: React.ReactNode }> = ({ childr
     signIn,
     signOut,
     resetPassword,
+    showAuthError,
   };
 
-  return <AuthContext.Provider value={value}>{children}</AuthContext.Provider>;
+  return (
+    <AuthContext.Provider value={value}>
+      {children}
+      <AuthErrorCard
+        isOpen={authErrorOpen}
+        reason={authErrorReason}
+        retryCount={retryCount}
+        onRetry={handleAuthRetry}
+        onRelogin={handleRelogin}
+        onClose={hideAuthError}
+      />
+    </AuthContext.Provider>
+  );
 };
 
 export const AuthProvider = AuthProviderComponent;
 export { AuthContext };
-
-// Custom hook to use the AuthContext
-export const useAuth = () => {
-  const context = React.useContext(AuthContext);
-  if (context === undefined) {
-    throw new Error('useAuth must be used within an AuthProvider');
-  }
-  return context;
-};

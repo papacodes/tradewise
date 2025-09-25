@@ -6,7 +6,7 @@ import { toast } from 'sonner';
 import { supabase } from '../lib/supabase';
 import { cacheUtils } from '../utils/cacheUtils';
 import { Plus, Search, Filter, ArrowUpDown, Calendar, TrendingUp, TrendingDown, Eye, Edit, Trash2 } from 'lucide-react';
-import { useCachedTrades, useCachedAccounts } from '../hooks/useSupabaseCache';
+import { useCachedTrades, useCachedAccounts } from '../hooks/useSimpleCache';
 
 
 interface Trade {

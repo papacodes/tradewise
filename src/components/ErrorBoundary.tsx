@@ -1,7 +1,5 @@
 import { Component, ErrorInfo, ReactNode } from 'react';
 import { AlertTriangle, RefreshCw, Database } from 'lucide-react';
-import { cacheHealthMonitor } from '../utils/cacheHealthMonitor';
-import { cacheManager } from '../utils/cacheManager';
 
 interface Props {
   children: ReactNode;
@@ -73,11 +71,12 @@ class ErrorBoundary extends Component<Props, State> {
     try {
       this.setState({ isRecovering: true });
       
-      // Clear all caches
-      await cacheManager.clearAllCaches();
+      // Clear any cached data that might be causing issues
+      localStorage.removeItem('simple-cache-data');
+      localStorage.removeItem('simple-cache-stats');
       
-      // Trigger health monitor recovery
-      cacheHealthMonitor.triggerRecovery();
+      // Clear other browser storage
+      sessionStorage.clear();
       
       // Wait a moment for recovery to take effect
       setTimeout(() => {
@@ -99,9 +98,9 @@ class ErrorBoundary extends Component<Props, State> {
     try {
       this.setState({ isRecovering: true });
       
-      // Clear all caches and refresh
-      await cacheManager.clearAllCaches();
-      cacheHealthMonitor.triggerRecovery();
+      // Clear cache and reload
+      localStorage.removeItem('simple-cache-data');
+      localStorage.removeItem('simple-cache-stats');
       
       // Reset error state after cache clear
       setTimeout(() => {

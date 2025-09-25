@@ -3,7 +3,7 @@ import { Layout } from '../components/Layout';
 import { useAuth } from '../hooks/useAuth';
 import { LineChart, Line, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, PieChart, Pie, Cell } from 'recharts';
 import { TrendingUp, TrendingDown, BarChart3 } from 'lucide-react';
-import { useCachedTrades, useCachedAccounts } from '../hooks/useSupabaseCache';
+import { useCachedTrades, useCachedAccounts } from '../hooks/useSimpleCache';
 
 
 

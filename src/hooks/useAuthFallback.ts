@@ -1,5 +1,4 @@
 import { useState, useCallback, useEffect } from 'react';
-import { cacheHealthMonitor } from '../utils/cacheHealthMonitor';
 
 interface AuthFallbackState {
   isOpen: boolean;
@@ -31,56 +30,22 @@ export const useAuthFallback = () => {
 
   const handleRetry = useCallback(async () => {
     try {
-      // Reset health monitor state
-      cacheHealthMonitor.resetRecoveryAttempts();
-      
-      // Clear any cached corruption indicators
-      // This will be handled by the health monitor
-      
-      // Trigger a health check
-      const isHealthy = await cacheHealthMonitor.performHealthCheck();
-      
-      if (!isHealthy) {
-        throw new Error('Health check failed after retry');
-      }
-      
-      // If successful, hide the fallback
+      // Simple retry logic - just hide the fallback and let the app retry
       hideFallback();
       
-    } catch (error) {
-      console.error('Auth fallback retry failed:', error);
-      // If retry fails, we'll let the modal handle the logout
-      throw error;
-    }
-  }, [hideFallback]);
-
-  // Listen for recovery events from cache health monitor
-  useEffect(() => {
-    const handleRecoveryNeeded = (reason: string) => {
-      // Only show fallback if we haven't shown it too many times recently
-      if (fallbackState.retryCount < 3) {
-        showFallback(reason);
-      } else {
-        // Too many retries, force a page reload
+      // If we've retried too many times, force a page reload
+      if (fallbackState.retryCount >= 3) {
         console.warn('Too many auth fallback attempts, forcing page reload');
         window.location.reload();
       }
-    };
+      
+    } catch (error) {
+      console.error('Auth fallback retry failed:', error);
+      throw error;
+    }
+  }, [hideFallback, fallbackState.retryCount]);
 
-    // Add event listener for recovery events
-    const originalTriggerRecovery = cacheHealthMonitor.triggerRecovery;
-    cacheHealthMonitor.triggerRecovery = async () => {
-      await originalTriggerRecovery.call(cacheHealthMonitor);
-      handleRecoveryNeeded('Cache recovery triggered');
-    };
-
-    // Cleanup
-    return () => {
-      cacheHealthMonitor.triggerRecovery = originalTriggerRecovery;
-    };
-  }, [fallbackState.retryCount, showFallback]);
-
-  // Auto-reset retry count after 10 minutes of no issues
+  // Auto-reset retry count after 5 minutes of no issues
   useEffect(() => {
     if (fallbackState.retryCount > 0 && !fallbackState.isOpen) {
       const resetTimer = setTimeout(() => {
@@ -88,7 +53,7 @@ export const useAuthFallback = () => {
           ...prev,
           retryCount: 0
         }));
-      }, 10 * 60 * 1000); // 10 minutes
+      }, 5 * 60 * 1000); // 5 minutes
 
       return () => clearTimeout(resetTimer);
     }

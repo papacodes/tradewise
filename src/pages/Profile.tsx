@@ -7,7 +7,7 @@ import { Layout } from '../components/Layout';
 import TierBadge from '../components/TierBadge';
 import UpgradePrompt from '../components/UpgradePrompt';
 import { useSubscription } from '../hooks/useSubscriptionHooks';
-import { useCachedUserProfile } from '../hooks/useSupabaseCache';
+import { useCachedUserProfile } from '../hooks/useSimpleCache';
 import { cacheUtils } from '../utils/cacheUtils';
 import { MFASetup } from '../components/MFASetup';
 import {

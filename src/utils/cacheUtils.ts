@@ -3,7 +3,7 @@
  * Provides additional cache operations and background refresh strategies
  */
 
-import { invalidateCacheByPattern, clearAllCache, getCacheStats } from '../hooks/useSupabaseCache';
+import { SimpleCache } from './simpleCache';
 
 // Cache key patterns for different data types
 export const CACHE_PATTERNS = {
@@ -58,20 +58,20 @@ export class CacheInvalidationManager {
     const patterns = Array.from(this.invalidationQueue);
     
     // Debug: Log current cache stats before invalidation
-    const cacheStats = getCacheStats();
+    const cacheStats = SimpleCache.getStats();
     console.log(`🔍 Cache invalidation debug - Current cache entries: ${cacheStats.size}`);
     console.log(`🔍 Cache keys before invalidation:`, Object.keys(cacheStats.entries || {}));
     
     patterns.forEach(pattern => {
       console.log(`🗑️ Invalidating pattern: ${pattern}`);
-      invalidateCacheByPattern(pattern);
+      SimpleCache.invalidatePattern(pattern);
     });
     
     this.invalidationQueue.clear();
     this.batchTimeout = null;
     
     // Debug: Log cache stats after invalidation
-    const newCacheStats = getCacheStats();
+    const newCacheStats = SimpleCache.getStats();
     console.log(`🔍 Cache entries after invalidation: ${newCacheStats.size}`);
     console.log(`🔍 Remaining cache keys:`, Object.keys(newCacheStats.entries || {}));
     console.log(`🗑️ Cache invalidated for patterns: ${patterns.join(', ')}`);
@@ -95,19 +95,19 @@ export class CacheInvalidationManager {
       }
       
       // Debug: Log current cache stats before invalidation
-      const cacheStats = getCacheStats();
+      const cacheStats = SimpleCache.getStats();
       console.log(`🔍 Cache invalidation debug - Current cache entries: ${cacheStats.size}`);
       console.log(`🔍 Cache keys before invalidation:`, Object.keys(cacheStats.entries || {}));
       
       patterns.forEach(pattern => {
         console.log(`🗑️ Invalidating pattern: ${pattern}`);
-        invalidateCacheByPattern(pattern);
+        SimpleCache.invalidatePattern(pattern);
       });
       
       this.invalidationQueue.clear();
       
       // Debug: Log cache stats after invalidation
-      const newCacheStats = getCacheStats();
+      const newCacheStats = SimpleCache.getStats();
       console.log(`🔍 Cache entries after invalidation: ${newCacheStats.size}`);
       console.log(`🔍 Remaining cache keys:`, Object.keys(newCacheStats.entries || {}));
       console.log(`🗑️ Cache invalidated for patterns: ${patterns.join(', ')}`);
@@ -120,7 +120,7 @@ export class CacheInvalidationManager {
    * Immediate cache invalidation
    */
   invalidateImmediate(pattern: string): void {
-    invalidateCacheByPattern(pattern);
+    SimpleCache.invalidatePattern(pattern);
     console.log(`🗑️ Cache immediately invalidated for pattern: ${pattern}`);
   }
 
@@ -145,19 +145,18 @@ export class CacheInvalidationManager {
     const pattern = CACHE_PATTERNS[type];
     
     if (userId) {
-      // Use broader wildcard pattern to match ALL cache keys for this table and user
-      // This handles all variations: trades_userId:"...", trades_accountIds:[...]|userId:"...", etc.
-      const userIdJson = JSON.stringify(userId);
+      // The cache keys are in format: trades_${userId}_${accountIds} or trading_accounts_${userId}
+      // So we need to match patterns that contain the userId directly (not JSON stringified)
       
       // Invalidate all entries for this table that contain the userId
+      this.queueInvalidation(`${pattern}_${userId}`);
+      
+      // Also use broader wildcard to catch any variations
       this.queueInvalidation(`${pattern}_*`);
       
-      // Also specifically target entries with this userId to be extra sure
-      this.queueInvalidation(`*userId:${userIdJson}*`);
-      
       console.log(`🎯 [CACHE INVALIDATION] Queued patterns for ${type}:`, [
-        `${pattern}_*`,
-        `*userId:${userIdJson}*`
+        `${pattern}_${userId}`,
+        `${pattern}_*`
       ]);
     } else {
       this.queueInvalidation(pattern);
@@ -288,7 +287,7 @@ export class CachePerformanceMonitor {
       total,
       hitRate: Math.round(hitRate * 100) / 100,
       uptime,
-      cacheStats: getCacheStats()
+      cacheStats: SimpleCache.getStats()
     };
   }
 
@@ -320,7 +319,7 @@ export const cacheUtils = {
    * Clear all caches and reset managers
    */
   resetAll: () => {
-    clearAllCache();
+    SimpleCache.clear();
     BackgroundRefreshManager.getInstance().stopAllRefreshes();
     CachePerformanceMonitor.getInstance().reset();
     console.log('🧹 All caches and managers reset');

@@ -8,7 +8,7 @@ import { useSubscription } from '../hooks/useSubscriptionHooks';
 
 import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabase';
-import { useCachedAccounts, useCachedTrades } from '../hooks/useSupabaseCache';
+import { useCachedAccounts, useCachedTrades } from '../hooks/useSimpleCache';
 import { cacheUtils } from '../utils/cacheUtils';
 
 interface TradingAccount {

@@ -2,7 +2,7 @@ import React, { useState, useEffect, useCallback, useMemo } from 'react';
 import { Layout } from '../components/Layout';
 import { useAuth } from '../hooks/useAuth';
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
-import { useCachedTrades, useCachedAccounts } from '../hooks/useSupabaseCache';
+import { useCachedTrades, useCachedAccounts } from '../hooks/useSimpleCache';
 import { MFASetupCard } from '../components/MFASetupCard';
 import { ProfileCompletionCard } from '../components/ProfileCompletionCard';
 import BetaDisclaimerCard from '../components/BetaDisclaimerCard';

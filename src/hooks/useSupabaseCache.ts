@@ -1,6 +1,5 @@
-import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
+import { useEffect, useState, useCallback, useRef, useMemo } from 'react';
 import { supabase } from '../lib/supabase';
-import { monitorAsyncOperation, cacheHealthMonitor } from '../utils/cacheHealthMonitor';
 
 interface CacheEntry<T> {
   data: T;
@@ -186,12 +185,15 @@ export const useSupabaseCache = <T>(
         }
       }
 
-      // Use health monitor to wrap the operation with timeout and monitoring
-      const result = await monitorAsyncOperation(
-        () => queryFnRef.current(),
-        `cache-fetch-${cacheKey}`,
-        timeout
-      );
+      // Execute query with timeout
+      const timeoutPromise = new Promise((_, reject) => {
+        setTimeout(() => reject(new Error('Query timeout')), timeout);
+      });
+      
+      const result = await Promise.race([
+        queryFnRef.current(),
+        timeoutPromise
+      ]) as { data: T | null; error: Error | null };
 
       if (!mountedRef.current) {
         return;
@@ -207,8 +209,8 @@ export const useSupabaseCache = <T>(
         if (mountedRef.current) {
           setData(result.data);
         }
-        // Reset recovery attempts on successful operation
-        cacheHealthMonitor.resetRecoveryAttempts();
+        // Log successful cache operation
+    console.log('Cache operation completed successfully');
       } else {
         if (mountedRef.current) {
           setData(null);
