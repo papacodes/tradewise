@@ -3,6 +3,8 @@ import { Layout } from '../components/Layout';
 import { useAuth } from '../hooks/useAuth';
 import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, Line, PieChart, Pie, Cell } from 'recharts';
 import { useCachedTrades, useCachedAccounts } from '../hooks/useSupabaseCache';
+import { MFASetupCard } from '../components/MFASetupCard';
+import { ProfileCompletionCard } from '../components/ProfileCompletionCard';
 
 interface Trade {
   id: string;
@@ -256,6 +258,12 @@ export const Dashboard: React.FC = React.memo(() => {
           <p className="text-gray-400 text-sm">
             Track your trading performance and insights
           </p>
+        </div>
+
+        {/* MFA and Profile Completion Cards */}
+        <div className="space-y-4 mb-8">
+          <MFASetupCard />
+          <ProfileCompletionCard />
         </div>
 
         {/* Stats Cards */}

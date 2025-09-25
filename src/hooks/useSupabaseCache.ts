@@ -229,7 +229,8 @@ export const useSupabaseCache = <T>(
   // Initial fetch
   useEffect(() => {
     fetchData().catch(error => {
-      // Error is already handled in fetchData
+      // Silently handle errors in background refresh
+      void error;
     });
   }, [cacheKey]); // Remove fetchData from dependencies to prevent infinite loops
 

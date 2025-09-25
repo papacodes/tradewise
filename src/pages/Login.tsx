@@ -7,6 +7,8 @@ import { useAuth } from '../hooks/useAuth';
 import { Eye, EyeOff, Menu, X, TrendingUp } from 'lucide-react';
 import { toast } from 'sonner';
 import { validateEmail, checkRateLimit } from '../utils/validation';
+import { MFAVerification } from '../components/MFAVerification';
+import { supabase } from '../lib/supabase';
 
 const loginSchema = z.object({
   email: z.string()
@@ -21,7 +23,10 @@ export const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  const { signIn } = useAuth();
+  const [showMFAVerification, setShowMFAVerification] = useState(false);
+  const [mfaFactorId, setMfaFactorId] = useState<string | null>(null);
+  const [loginCredentials, setLoginCredentials] = useState<{ email: string; password: string } | null>(null);
+  const { } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -77,13 +82,43 @@ export const Login: React.FC = () => {
         return;
       }
       
-      const { error } = await signIn(emailValidation.sanitized, data.password);
+      // Try to sign in with password first
+      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
+        email: emailValidation.sanitized,
+        password: data.password,
+      });
       
-      if (error) {
+      if (signInError) {
+        // Check if MFA is required
+        if (signInError.message?.includes('MFA') || signInError.message?.includes('factor')) {
+          // Get MFA factors for this user
+          const { data: factors, error: factorsError } = await supabase.auth.mfa.listFactors();
+          
+          if (factorsError) {
+            setError('root', {
+              message: 'Failed to load MFA factors. Please try again.',
+            });
+            return;
+          }
+          
+          const totpFactor = factors?.totp?.[0];
+          if (totpFactor) {
+            // Store credentials and show MFA verification
+            setLoginCredentials({ email: emailValidation.sanitized, password: data.password });
+            setMfaFactorId(totpFactor.id);
+            setShowMFAVerification(true);
+            return;
+          }
+        }
+        
         setError('root', {
-          message: error.message || 'Invalid email or password',
+          message: signInError.message || 'Invalid email or password',
         });
-      } else {
+        return;
+      }
+      
+      // If no MFA required, proceed with normal login
+      if (signInData.session) {
         toast.success('Login successful!');
         navigate(from, { replace: true });
       }
@@ -95,6 +130,20 @@ export const Login: React.FC = () => {
     } finally {
       setIsLoading(false);
     }
+  };
+  
+  const handleMFASuccess = () => {
+    setShowMFAVerification(false);
+    setMfaFactorId(null);
+    setLoginCredentials(null);
+    toast.success('Login successful!');
+    navigate(from, { replace: true });
+  };
+  
+  const handleMFACancel = () => {
+    setShowMFAVerification(false);
+    setMfaFactorId(null);
+    setLoginCredentials(null);
   };
 
   return (
@@ -296,6 +345,17 @@ export const Login: React.FC = () => {
           </div>
         </div>
       </main>
+      
+      {/* MFA Verification Modal */}
+      {showMFAVerification && mfaFactorId && loginCredentials && (
+        <MFAVerification
+          factorId={mfaFactorId}
+          email={loginCredentials.email}
+          password={loginCredentials.password}
+          onSuccess={handleMFASuccess}
+          onCancel={handleMFACancel}
+        />
+      )}
     </div>
   );
 };

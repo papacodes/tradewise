@@ -6,6 +6,7 @@ import { toast } from 'sonner';
 import { Layout } from '../components/Layout';
 import { useCachedUserProfile } from '../hooks/useSupabaseCache';
 import { cacheUtils } from '../utils/cacheUtils';
+import { MFASetup } from '../components/MFASetup';
 import {
   validateName,
   validatePhone,
@@ -70,6 +71,7 @@ const Profile: React.FC = () => {
   const [uploadingAvatar, setUploadingAvatar] = useState(false);
   const [showPasswordForm, setShowPasswordForm] = useState(false);
   const [showDeleteConfirm, setShowDeleteConfirm] = useState(false);
+  const [showMFASetup, setShowMFASetup] = useState(false);
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: '',
     newPassword: '',
@@ -578,7 +580,15 @@ const Profile: React.FC = () => {
                       {profile?.two_factor_enabled ? 'Enabled' : 'Disabled'}
                     </span>
                     <button
-                      onClick={() => updatePreferences({ two_factor_enabled: !profile?.two_factor_enabled })}
+                      onClick={() => {
+                        if (profile?.two_factor_enabled) {
+                          // Disable MFA
+                          updatePreferences({ two_factor_enabled: false });
+                        } else {
+                          // Enable MFA - show setup modal
+                          setShowMFASetup(true);
+                        }
+                      }}
                       className={`relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${
                         profile?.two_factor_enabled ? 'bg-blue-600' : 'bg-gray-200 dark:bg-gray-700'
                       }`}
@@ -662,6 +672,26 @@ const Profile: React.FC = () => {
           </div>
         </div>
       </div>
+      
+      {/* MFA Setup Modal */}
+      {showMFASetup && (
+        <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+          <div className="bg-white dark:bg-gray-800 rounded-lg p-6 max-w-md w-full mx-4">
+            <MFASetup
+              onComplete={() => {
+                setShowMFASetup(false);
+                // Refresh profile to update two_factor_enabled status
+                window.location.reload();
+              }}
+              onCancel={() => {
+                setShowMFASetup(false);
+                // Reset the toggle if user cancels
+                updatePreferences({ two_factor_enabled: false });
+              }}
+            />
+          </div>
+        </div>
+      )}
     </Layout>
   );
 };
