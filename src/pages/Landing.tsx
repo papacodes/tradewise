@@ -3,7 +3,6 @@ import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
 import { TrendingUp, BarChart3, Shield, Zap, ArrowRight, Menu, X } from 'lucide-react';
 // import { useAuth } from '../hooks/useAuth'; // Commented out as not currently used
-import { initializeCacheManagement } from '../utils/cacheManager';
 import { clearAllCache } from '../hooks/useSupabaseCache';
 
 export const Landing = () => {
@@ -16,13 +15,14 @@ export const Landing = () => {
     
     const initializeCleanState = async () => {
       try {
-        console.log('🎯 Landing page: Initializing clean cache state...');
+        console.log('🎯 Landing page: Initializing clean cache state (FIXED VERSION)...');
         
         // Clear in-memory cache for fresh start
         clearAllCache();
         
-        // Initialize comprehensive cache management (clears browser storage in dev mode)
-        await initializeCacheManagement();
+        // Initialize cache management but skip reload to prevent infinite refresh
+        const { clearAllCaches } = await import('../utils/cacheManager');
+        await clearAllCaches({ skipReload: true, logOperations: true });
         
         console.log('✅ Landing page initialized with clean cache state');
       } catch (error) {
