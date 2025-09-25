@@ -42,7 +42,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onComplete, onCancel }) => {
     try {
       const { data, error } = await supabase.auth.mfa.enroll({
         factorType: 'totp',
-        friendlyName: 'Trading Platform Authenticator'
+        friendlyName: 'TradeTrackr Authenticator'
       });
 
       if (error) throw error;
@@ -93,7 +93,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onComplete, onCancel }) => {
       
       // Update user profile to reflect MFA is enabled
       const { error: updateError } = await supabase
-        .from('user_profiles')
+        .from('profiles')
         .update({ two_factor_enabled: true })
         .eq('user_id', (await supabase.auth.getUser()).data.user?.id);
 

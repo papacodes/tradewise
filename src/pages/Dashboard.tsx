@@ -5,6 +5,7 @@ import { XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer, LineChart, L
 import { useCachedTrades, useCachedAccounts } from '../hooks/useSupabaseCache';
 import { MFASetupCard } from '../components/MFASetupCard';
 import { ProfileCompletionCard } from '../components/ProfileCompletionCard';
+import BetaDisclaimerCard from '../components/BetaDisclaimerCard';
 
 interface Trade {
   id: string;
@@ -259,6 +260,9 @@ export const Dashboard: React.FC = React.memo(() => {
             Track your trading performance and insights
           </p>
         </div>
+
+        {/* Beta Disclaimer */}
+        <BetaDisclaimerCard />
 
         {/* MFA and Profile Completion Cards */}
         <div className="space-y-4 mb-6 sm:mb-8">

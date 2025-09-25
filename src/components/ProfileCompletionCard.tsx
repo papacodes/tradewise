@@ -38,7 +38,7 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
   // Check if profile is incomplete
   const isProfileIncomplete = !userProfile?.first_name || 
                              !userProfile?.last_name || 
-                             !userProfile?.phone_number || 
+                             !userProfile?.phone || 
                              !userProfile?.date_of_birth;
 
   // Don't show if dismissed or profile is complete
@@ -49,7 +49,7 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
   const missingFields = [];
   if (!userProfile?.first_name) missingFields.push('First Name');
   if (!userProfile?.last_name) missingFields.push('Last Name');
-  if (!userProfile?.phone_number) missingFields.push('Phone Number');
+  if (!userProfile?.phone) missingFields.push('Phone');
   if (!userProfile?.date_of_birth) missingFields.push('Date of Birth');
 
   const totalFields = 4;

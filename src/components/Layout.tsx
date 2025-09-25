@@ -49,6 +49,9 @@ export const Layout: React.FC<LayoutProps> = memo(({ children }) => {
         <div className="flex items-center gap-4">
           <TrendingUp className="w-4 h-4 text-blue-500" />
           <h1 className="text-white text-lg font-bold">TradeTrackr</h1>
+          <span className="bg-orange-500 text-black text-xs font-bold px-2 py-1 rounded-md uppercase tracking-wide">
+            BETA
+          </span>
         </div>
         
         {/* Desktop Navigation */}

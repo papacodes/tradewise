@@ -934,7 +934,11 @@ const PersonalDataForm: React.FC<{
   const handleInputChange = useCallback((field: string, value: string) => {
     const validation = validateField(field, value);
     
-    setFormData(prev => ({ ...prev, [field]: validation.sanitized }));
+    // Preserve raw input for 'bio' so spaces aren't trimmed while typing.
+    setFormData(prev => ({
+      ...prev,
+      [field]: field === 'bio' ? value : validation.sanitized
+    }));
     
     if (validation.error) {
       setErrors(prev => ({ ...prev, [field]: validation.error! }));
