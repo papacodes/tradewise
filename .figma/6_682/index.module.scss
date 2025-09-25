@@ -1,0 +1,392 @@
+* {
+  box-sizing: border-box;
+}
+
+.depth1Frame0 {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  background: #121417;
+  width: 1280px;
+  height: 1131px;
+
+  .depth2Frame0 {
+    display: flex;
+    flex-shrink: 0;
+    align-items: center;
+    align-self: stretch;
+    justify-content: space-between;
+    border-width: 0px 0px 1px;
+    border-style: solid;
+    border-color: #e5e8eb;
+    padding: 12px 40px 11px;
+
+    .depth3Frame0 {
+      display: inline-flex;
+      flex-shrink: 0;
+      align-items: center;
+      column-gap: 16px;
+
+      .depth5Frame0 {
+        flex-shrink: 0;
+        width: 16px;
+        height: 16px;
+        overflow: hidden;
+      }
+
+      .tradeWise {
+        flex-shrink: 0;
+        line-height: 23px;
+        letter-spacing: 0;
+        color: #ffffff;
+        font-family: Inter, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimHei, Arial, Helvetica, sans-serif;
+        font-size: 18px;
+        font-weight: 700;
+      }
+    }
+
+    .depth3Frame1 {
+      display: flex;
+      flex-grow: 1;
+      align-items: flex-start;
+      justify-content: flex-end;
+      column-gap: 32px;
+
+      .depth4Frame0 {
+        display: inline-flex;
+        flex-shrink: 0;
+        align-items: center;
+        column-gap: 36px;
+        height: 40px;
+
+        .features {
+          flex-shrink: 0;
+          line-height: 21px;
+          letter-spacing: 0;
+          color: #ffffff;
+          font-family: Inter, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimHei, Arial, Helvetica, sans-serif;
+          font-size: 14px;
+          font-weight: 500;
+        }
+      }
+
+      .depth4Frame1 {
+        display: inline-flex;
+        flex-shrink: 0;
+        align-items: flex-start;
+        column-gap: 8px;
+
+        .signUp {
+          flex-shrink: 0;
+          align-self: stretch;
+          line-height: 21px;
+          letter-spacing: 0;
+          color: #ffffff;
+          font-family: Inter, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimHei, Arial, Helvetica, sans-serif;
+          font-size: 14px;
+          font-weight: 700;
+        }
+
+        .depth6Frame0 {
+          display: inline-flex;
+          flex-direction: column;
+          flex-shrink: 0;
+          align-items: center;
+          justify-content: center;
+          border-radius: 8px;
+          background: #1273d4;
+          padding-right: 16px;
+          padding-left: 16px;
+          height: 40px;
+          overflow: hidden;
+        }
+
+        .depth6Frame02 {
+          display: flex;
+          flex-direction: column;
+          flex-shrink: 0;
+          align-items: center;
+          justify-content: center;
+          border-radius: 8px;
+          background: #293038;
+          padding-right: 21px;
+          padding-left: 21px;
+          height: 40px;
+          overflow: hidden;
+        }
+      }
+    }
+  }
+
+  .depth3Frame02 {
+    display: flex;
+    flex-direction: column;
+    flex-grow: 1;
+    align-items: flex-start;
+    align-self: stretch;
+    justify-content: center;
+    padding: 20px 160px;
+    max-width: 960px;
+    overflow: hidden;
+
+    .depth5Frame02 {
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      align-items: flex-start;
+      align-self: stretch;
+      padding: 16px;
+
+      .depth6Frame03 {
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        align-items: flex-start;
+        align-self: stretch;
+        border-radius: 8px;
+        padding: 243px 0px 41px 192px;
+        overflow: hidden;
+        background-image: linear-gradient(90deg, #0000001a 0%, #00000066 100%),
+          url(../image/mfy2eccl-yw79xlh.png);
+        background-position: center;
+        background-size: cover;
+        background-repeat: no-repeat;
+
+        .depth7Frame0 {
+          display: flex;
+          flex-direction: column;
+          align-items: flex-start;
+          align-self: stretch;
+          margin-right: -160px;
+          row-gap: 8px;
+
+          .elevateYourTradingWi {
+            flex-shrink: 0;
+            align-self: stretch;
+            text-align: center;
+            line-height: 60px;
+            letter-spacing: -2px;
+            color: #ffffff;
+            font-family: Inter, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimHei, Arial, Helvetica, sans-serif;
+            font-size: 48px;
+            font-weight: 900;
+          }
+
+          .trackAnalyzeAndOptim {
+            flex-shrink: 0;
+            align-self: stretch;
+            width: 896px;
+            text-align: center;
+            line-height: 24px;
+            letter-spacing: 0;
+            color: #ffffff;
+            font-family: Inter, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimHei, Arial, Helvetica, sans-serif;
+            font-size: 16px;
+          }
+        }
+
+        .depth7Frame1 {
+          display: inline-flex;
+          flex-wrap: wrap;
+          align-content: flex-start;
+          align-items: flex-start;
+          align-self: stretch;
+          justify-content: center;
+          column-gap: 12px;
+          margin: 32px 153px 0px 311px;
+          row-gap: 12px;
+
+          .getStarted {
+            flex-shrink: 0;
+            align-self: stretch;
+            line-height: 24px;
+            letter-spacing: 0;
+            color: #ffffff;
+            font-family: Inter, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimHei, Arial, Helvetica, sans-serif;
+            font-size: 16px;
+            font-weight: 700;
+          }
+
+          .depth9Frame0 {
+            display: inline-flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            background: #1273d4;
+            padding-right: 20px;
+            padding-left: 20px;
+            height: 48px;
+            overflow: hidden;
+          }
+
+          .depth9Frame02 {
+            display: inline-flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            align-items: center;
+            justify-content: center;
+            border-radius: 8px;
+            background: #293038;
+            padding-right: 20px;
+            padding-left: 20px;
+            height: 48px;
+            overflow: hidden;
+          }
+        }
+      }
+    }
+
+    .depth4Frame12 {
+      display: flex;
+      flex-direction: column;
+      flex-shrink: 0;
+      align-items: flex-start;
+      align-self: stretch;
+      padding: 40px 16px;
+      row-gap: 40px;
+
+      .depth5Frame03 {
+        display: flex;
+        flex-direction: column;
+        flex-shrink: 0;
+        align-items: flex-start;
+        align-self: stretch;
+        row-gap: 16px;
+
+        .keyFeatures {
+          flex-shrink: 0;
+          width: 720px;
+          line-height: 45px;
+          letter-spacing: -1px;
+          color: #ffffff;
+          font-family: Inter, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimHei, Arial, Helvetica, sans-serif;
+          font-size: 36px;
+          font-weight: 900;
+        }
+
+        .tradeWiseOffersAComp {
+          flex-shrink: 0;
+          width: 720px;
+          line-height: 24px;
+          letter-spacing: 0;
+          color: #ffffff;
+          font-family: Inter, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimHei, Arial, Helvetica, sans-serif;
+          font-size: 16px;
+        }
+      }
+
+      .depth6Frame04 {
+        display: flex;
+        flex-shrink: 0;
+        align-items: flex-start;
+        align-self: stretch;
+        column-gap: 12px;
+
+        .depth7Frame02 {
+          display: flex;
+          flex-direction: column;
+          flex-shrink: 0;
+          align-items: flex-start;
+          align-self: stretch;
+          border: 1px solid #3b4754;
+          border-radius: 8px;
+          background: #1c2126;
+          padding: 15px;
+          width: 301px;
+          row-gap: 12px;
+
+          .depth8Frame0 {
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            align-items: flex-start;
+            align-self: stretch;
+
+            .depth9Frame03 {
+              flex-grow: 1;
+              width: 24px;
+              height: 24px;
+              overflow: hidden;
+            }
+          }
+
+          .depth8Frame1 {
+            display: flex;
+            flex-direction: column;
+            flex-shrink: 0;
+            align-items: flex-start;
+            align-self: stretch;
+            row-gap: 4px;
+
+            .performanceAnalytics {
+              flex-shrink: 0;
+              align-self: stretch;
+              line-height: 20px;
+              letter-spacing: 0;
+              color: #ffffff;
+              font-family: Inter, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimHei, Arial, Helvetica, sans-serif;
+              font-size: 16px;
+              font-weight: 700;
+            }
+
+            .visualizeYourTrading {
+              flex-shrink: 0;
+              align-self: stretch;
+              width: 267px;
+              line-height: 21px;
+              letter-spacing: 0;
+              color: #9eabba;
+              font-family: Inter, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimHei, Arial, Helvetica, sans-serif;
+              font-size: 14px;
+            }
+          }
+        }
+      }
+    }
+  }
+
+  .depth4Frame02 {
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    align-items: flex-start;
+    align-self: stretch;
+    padding: 40px 180px;
+    row-gap: 24px;
+
+    .depth5Frame04 {
+      display: flex;
+      flex-shrink: 0;
+      flex-wrap: wrap;
+      align-content: center;
+      align-items: center;
+      align-self: stretch;
+      justify-content: space-between;
+      row-gap: 24px;
+
+      .privacyPolicy {
+        flex-shrink: 0;
+        width: 160px;
+        text-align: center;
+        line-height: 24px;
+        letter-spacing: 0;
+        color: #9eabba;
+        font-family: Inter, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimHei, Arial, Helvetica, sans-serif;
+        font-size: 16px;
+      }
+    }
+
+    .a2024TradeWiseAllRig {
+      flex-shrink: 0;
+      align-self: stretch;
+      text-align: center;
+      line-height: 24px;
+      letter-spacing: 0;
+      color: #9eabba;
+      font-family: Inter, "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", SimHei, Arial, Helvetica, sans-serif;
+      font-size: 16px;
+    }
+  }
+}
