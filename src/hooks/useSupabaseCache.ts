@@ -77,10 +77,6 @@ export const invalidateCacheByPattern = (pattern: string): void => {
   const keysToDelete: string[] = [];
   const allKeys = Array.from(cache.keys());
   
-  console.log(`🔍 [CACHE DEBUG] Invalidating pattern: ${pattern}`);
-  console.log(`🔍 [CACHE DEBUG] Total cache entries before: ${allKeys.length}`);
-  console.log(`🔍 [CACHE DEBUG] Cache keys before invalidation:`, allKeys);
-  
   for (const key of allKeys) {
     let shouldDelete = false;
     
@@ -107,18 +103,7 @@ export const invalidateCacheByPattern = (pattern: string): void => {
     }
   }
   
-  console.log(`🔍 [CACHE DEBUG] Keys to delete:`, keysToDelete);
-  
   keysToDelete.forEach(key => cache.delete(key));
-  
-  const remainingKeys = Array.from(cache.keys());
-  console.log(`🔍 [CACHE DEBUG] Total cache entries after: ${remainingKeys.length}`);
-  console.log(`🔍 [CACHE DEBUG] Remaining cache keys after invalidation:`, remainingKeys);
-  console.log(`🗑️ Successfully invalidated ${keysToDelete.length} cache entries matching pattern: ${pattern}`);
-  
-  if (keysToDelete.length === 0) {
-    console.warn(`⚠️ [CACHE WARNING] No cache entries matched pattern: ${pattern}`);
-  }
 };
 
 // Clear all cache
@@ -168,33 +153,16 @@ export const useSupabaseCache = <T>(
   const mountedRef = useRef(true);
 
   const fetchData = useCallback(async (useCache: boolean = true): Promise<void> => {
-    console.log(`🔄 [FETCHDATA START] useSupabaseCache fetchData called for ${cacheKey}`, {
-      useCache,
-      timestamp: new Date().toISOString(),
-      mountedRef: mountedRef.current
-    });
-    console.log(`🔧 [FETCHDATA EXEC] fetchData executing for ${cacheKey}`, { cacheKey, ttl, staleWhileRevalidate, useCache });
-    
     if (!mountedRef.current) {
-      console.log(`⚠️ [FETCHDATA ABORT] useSupabaseCache component unmounted before fetchData execution for ${cacheKey}`);
       return;
     }
     
-    console.log(`🎯 [FETCHDATA CONTINUE] About to enter try block for ${cacheKey}`);
     try {
-      console.log(`🔍 [CACHE CHECK] Checking cache for ${cacheKey}`, { useCache });
       // Check cache first if enabled
       if (useCache) {
         const cachedEntry = getCacheEntry<T>(cacheKey);
-        console.log(`📦 [CACHE RESULT] Cache entry for ${cacheKey}:`, { 
-          hasCachedEntry: !!cachedEntry, 
-          isStale: cachedEntry ? isStale(cachedEntry) : null 
-        });
         
         if (cachedEntry && !isStale(cachedEntry)) {
-          console.log(`✅ [CACHE HIT] Using cached data for ${cacheKey}`, {
-            age: Date.now() - cachedEntry.timestamp
-          });
           if (mountedRef.current) {
             setData(cachedEntry.data);
             setLoading(false);
@@ -204,82 +172,47 @@ export const useSupabaseCache = <T>(
         }
 
         if (cachedEntry && staleWhileRevalidate) {
-          console.log(`⚡ [STALE CACHE] Using stale data while revalidating for ${cacheKey}`);
           if (mountedRef.current) {
             setData(cachedEntry.data);
             setLoading(false);
           }
-        } else if (cachedEntry) {
-          console.log(`🔄 [STALE ENTRY] Cache entry is stale for ${cacheKey}`);
-        } else {
-          console.log(`❌ [NO CACHE] No cache entry found for ${cacheKey}`);
         }
       }
 
-      console.log(`🚀 [QUERY START] About to fetch fresh data for ${cacheKey}`);
-      console.log(`🔧 [QUERY FN] QueryFn ref current:`, { hasQueryFn: !!queryFnRef.current });
-      
-      console.log(`📞 [CALLING QUERY] Calling queryFn for ${cacheKey}`);
       // Fetch fresh data using stabilized ref
       const result = await queryFnRef.current();
-      
-      console.log(`📊 [QUERY RESULT] Query completed for ${cacheKey}:`, { 
-        hasResult: !!result, 
-        hasData: result?.data !== undefined, 
-        hasError: !!result?.error 
-      });
-      console.log(`📋 [QUERY DATA] Query data details for ${cacheKey}:`, { dataType: typeof result?.data, dataLength: Array.isArray(result?.data) ? result.data.length : 'not array', error: result?.error });
 
       if (!mountedRef.current) {
-        console.log(`⚠️ [UNMOUNTED] Component unmounted after query for ${cacheKey}`);
         return;
       }
 
       if (result.error) {
-        console.error(`❌ [QUERY ERROR] Query error for ${cacheKey}:`, result.error);
         throw new Error(result.error.message || 'Query failed');
       }
-
-      console.log(`✅ [FETCH SUCCESS] Fetch success for ${cacheKey}`, {
-        hasData: result.data !== null,
-        dataType: typeof result.data,
-        isArray: Array.isArray(result.data)
-      });
       
       // Update cache and state
       if (result.data !== null) {
-        console.log(`💾 [CACHE SET] Setting cache for ${cacheKey}`);
         setCacheEntry(cacheKey, result.data, ttl);
         if (mountedRef.current) {
-          console.log(`📊 [STATE UPDATE] Updating state with data for ${cacheKey}`);
           setData(result.data);
         }
-        console.log(`✅ [CACHE COMPLETE] Data cached and state updated for ${cacheKey}`);
       } else {
         if (mountedRef.current) {
-          console.log(`📭 [NULL DATA] Setting null data for ${cacheKey}`);
           setData(null);
         }
-        console.log(`📭 [NO DATA] No data returned for ${cacheKey}`);
       }
       if (mountedRef.current) {
-        console.log(`🧹 [CLEAR ERROR] Clearing error state for ${cacheKey}`);
         setError(null);
       }
     } catch (err) {
       if (!mountedRef.current) {
-        console.log(`⚠️ [UNMOUNTED ERROR] Component unmounted during error handling for ${cacheKey}`);
         return;
       }
       const errorObj = err instanceof Error ? err : new Error('Unknown error');
-      console.error(`❌ [FETCH ERROR] Fetch error for ${cacheKey}:`, errorObj);
       setError(errorObj);
     } finally {
       if (mountedRef.current) {
-        console.log(`🏁 [FETCH COMPLETE] Fetch complete, setting loading false for ${cacheKey}`);
         setLoading(false);
-      } else {
-        console.log(`⚠️ [UNMOUNTED FINALLY] Component unmounted in finally block for ${cacheKey}`);
       }
     }
   }, [cacheKey, ttl, staleWhileRevalidate]);
@@ -295,28 +228,13 @@ export const useSupabaseCache = <T>(
 
   // Initial fetch
   useEffect(() => {
-    console.log(`🚀 [${cacheKey}] Initial fetch useEffect triggered`);
-    console.log(`🎯 [${cacheKey}] About to call fetchData from initial fetch useEffect`);
-    console.log(`🔧 [${cacheKey}] fetchData function exists:`, { hasFetchData: !!fetchData });
-    console.log(`🔧 [${cacheKey}] cacheKey:`, cacheKey);
-    console.log(`🔧 [${cacheKey}] Dependencies:`, { cacheKey, fetchDataType: typeof fetchData });
-    
-    // Call fetchData and handle any immediate errors
-    try {
-      const fetchPromise = fetchData();
-      console.log(`📞 [${cacheKey}] fetchData called, promise created`);
-      
-      fetchPromise.catch(error => {
-        console.error(`❌ [${cacheKey}] Unhandled error in fetchData:`, error);
-      });
-    } catch (syncError) {
-      console.error(`❌ [${cacheKey}] Synchronous error calling fetchData:`, syncError);
-    }
-  }, [cacheKey, fetchData]); // Include fetchData to ensure latest version is called
+    fetchData().catch(error => {
+      // Error is already handled in fetchData
+    });
+  }, [cacheKey]); // Remove fetchData from dependencies to prevent infinite loops
 
   // Setup refetch interval
   useEffect(() => {
-    console.debug(`⏰ [${cacheKey}] Refetch interval useEffect triggered`, { refetchInterval });
     if (refetchInterval && refetchInterval > 0) {
       intervalRef.current = setInterval(() => {
         fetchData();
@@ -325,25 +243,27 @@ export const useSupabaseCache = <T>(
       return () => {
         if (intervalRef.current) {
           clearInterval(intervalRef.current);
+          intervalRef.current = null;
         }
       };
     }
     return undefined;
-  }, [refetchInterval, fetchData]); // Include fetchData for consistency
+  }, [refetchInterval]); // Remove fetchData to prevent memory leaks
 
   // Refetch on window focus
   useEffect(() => {
-    console.debug(`👁️ [${cacheKey}] Window focus useEffect triggered`, { refetchOnWindowFocus });
     if (refetchOnWindowFocus) {
       const handleFocus = () => {
         fetchData();
       };
 
       window.addEventListener('focus', handleFocus);
-      return () => window.removeEventListener('focus', handleFocus);
+      return () => {
+        window.removeEventListener('focus', handleFocus);
+      };
     }
     return undefined;
-  }, [refetchOnWindowFocus, fetchData]); // Include fetchData for consistency
+  }, [refetchOnWindowFocus]); // Remove fetchData to prevent memory leaks
 
   // Cleanup on unmount
   useEffect(() => {

@@ -93,7 +93,7 @@ const Profile: React.FC = () => {
       console.error('Error refreshing profile:', error);
       toast.error('Failed to refresh profile');
     }
-  }, [refetchProfile, user?.id]);
+  }, [user?.id]); // Remove refetchProfile to prevent re-renders
 
   const fetchSessions = useCallback(async () => {
     try {
@@ -117,7 +117,7 @@ const Profile: React.FC = () => {
     if (user) {
       fetchSessions();
     }
-  }, [user, fetchSessions]);
+  }, [user?.id]); // Remove fetchSessions from dependencies to prevent infinite loops
 
   const handleAvatarUpload = useCallback(async (event: React.ChangeEvent<HTMLInputElement>) => {
     const file = event.target.files?.[0];
@@ -193,7 +193,7 @@ const Profile: React.FC = () => {
         event.target.value = '';
       }
     }
-  }, [user, refreshProfile]);
+  }, [user?.id]); // Remove refreshProfile to prevent re-renders
 
   const updatePersonalData = useCallback(async (data: Partial<UserProfile>) => {
     try {
@@ -225,7 +225,7 @@ const Profile: React.FC = () => {
       console.error('Error updating profile:', error);
       toast.error('Failed to update personal information');
     }
-  }, [user?.id, refreshProfile]);
+  }, [user?.id]); // Remove refreshProfile to prevent re-renders
 
   const updatePreferences = useCallback(async (data: Partial<UserProfile>) => {
     try {
@@ -244,7 +244,7 @@ const Profile: React.FC = () => {
       console.error('Error updating preferences:', error);
       toast.error('Failed to update preferences');
     }
-  }, [user?.id, refreshProfile]);
+  }, [user?.id]); // Remove refreshProfile to prevent re-renders
 
   const changePassword = useCallback(async () => {
     // Validate password match
