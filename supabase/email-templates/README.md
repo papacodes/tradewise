@@ -1,12 +1,12 @@
 # Email Templates for Supabase Authentication
 
-This directory contains custom HTML email templates for Supabase authentication that match the TradeWise dark theme design.
+This directory contains custom HTML email templates for Supabase authentication that match the TradeTrackr dark theme design.
 
 ## Templates Included
 
 ### 1. Email Confirmation (`confirm-email.html`)
 - Used when users sign up and need to verify their email address
-- Features the TradeWise branding and dark theme
+- Features the TradeTrackr branding and dark theme
 - Includes security information and expiration notice
 
 ### 2. Password Reset (`reset-password.html`)
@@ -24,13 +24,13 @@ This directory contains custom HTML email templates for Supabase authentication 
 ### Step 2: Configure Email Confirmation Template
 1. Click on **Confirm signup** template
 2. Replace the default HTML with the content from `confirm-email.html`
-3. Make sure the subject line is appropriate (e.g., "Confirm your email address - TradeWise")
+3. Make sure the subject line is appropriate (e.g., "Confirm your email address - TradeTrackr")
 4. Save the changes
 
 ### Step 3: Configure Password Reset Template
 1. Click on **Reset password** template
 2. Replace the default HTML with the content from `reset-password.html`
-3. Set an appropriate subject line (e.g., "Reset your password - TradeWise")
+3. Set an appropriate subject line (e.g., "Reset your password - TradeTrackr")
 4. Save the changes
 
 ### Step 4: Test the Templates
@@ -46,9 +46,9 @@ Both templates use Supabase's built-in template variables:
 
 ## Design Features
 
-- **Dark Theme**: Matches the TradeWise application design
+- **Dark Theme**: Matches the TradeTrackr application design
 - **Responsive**: Works well on both desktop and mobile email clients
-- **Branded**: Includes TradeWise logo and consistent styling
+- **Branded**: Includes TradeTrackr logo and consistent styling
 - **Accessible**: Good contrast ratios and readable fonts
 - **Security-focused**: Clear security notices and best practices
 
