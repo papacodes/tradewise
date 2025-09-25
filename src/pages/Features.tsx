@@ -1,4 +1,4 @@
-import React, { useEffect, useMemo } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   TrendingUp, 
@@ -12,10 +12,14 @@ import {
   Users,
   Clock,
   CheckCircle,
-  ArrowRight
+  ArrowRight,
+  Menu,
+  X
 } from 'lucide-react';
 
 export const Features = React.memo(() => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  
   useEffect(() => {
     document.title = 'Features - TradeWise';
   }, []);
@@ -70,7 +74,9 @@ export const Features = React.memo(() => {
             <TrendingUp className="w-4 h-4 text-blue-500" />
             <span className="text-lg font-bold">TradeWise</span>
           </div>
-          <div className="flex items-center gap-8">
+          
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center gap-8">
             <nav className="flex items-center gap-9">
               <Link to="/" className="text-sm font-medium hover:text-blue-400 transition-colors">
                 Home
@@ -100,7 +106,81 @@ export const Features = React.memo(() => {
               </Link>
             </div>
           </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden text-gray-300 hover:text-white transition-colors"
+            aria-label="Toggle mobile menu"
+          >
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
+
+        {/* Mobile Navigation Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden">
+            <div className="fixed inset-0 z-50 bg-black bg-opacity-50" onClick={() => setIsMobileMenuOpen(false)} />
+            <div className="fixed top-0 right-0 h-full w-64 bg-[#121417] border-l border-gray-700 z-50 transform transition-transform duration-300 ease-in-out">
+              <div className="flex items-center justify-between p-4 border-b border-gray-700">
+                <span className="text-lg font-semibold text-white">Menu</span>
+                <button
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-gray-300 hover:text-white transition-colors"
+                  aria-label="Close mobile menu"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+              <nav className="flex flex-col p-4 space-y-4">
+                <Link
+                  to="/"
+                  className="text-gray-300 hover:text-blue-400 transition-colors py-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Home
+                </Link>
+                <Link
+                  to="/features"
+                  className="text-blue-400 font-medium py-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Features
+                </Link>
+                <Link
+                  to="/pricing"
+                  className="text-gray-300 hover:text-blue-400 transition-colors py-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Pricing
+                </Link>
+                <Link
+                  to="/support"
+                  className="text-gray-300 hover:text-blue-400 transition-colors py-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Support
+                </Link>
+                <div className="pt-4 border-t border-gray-700">
+                  <Link
+                    to="/login"
+                    className="block text-gray-300 hover:text-blue-400 transition-colors py-2 mb-2"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Log In
+                  </Link>
+                  <Link
+                    to="/register"
+                    className="block bg-[#1273d4] hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors text-center"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Sign Up
+                  </Link>
+                </div>
+              </nav>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* Hero Section */}

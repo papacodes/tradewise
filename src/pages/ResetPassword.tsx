@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { supabase } from '../lib/supabase';
-import { Eye, EyeOff, Lock, CheckCircle } from 'lucide-react';
+import { Eye, EyeOff, Lock, CheckCircle, TrendingUp } from 'lucide-react';
 
 const resetPasswordSchema = z.object({
   password: z.string()
@@ -111,7 +111,7 @@ export const ResetPassword: React.FC = () => {
         {/* Header */}
         <header className="flex items-center justify-between border-b border-gray-700 px-10 py-3">
           <div className="flex items-center gap-4">
-            <div className="w-4 h-4 bg-blue-500 rounded-sm"></div>
+            <TrendingUp className="w-8 h-8 text-blue-400" />
             <h1 className="text-white text-lg font-bold">TradeWise</h1>
           </div>
         </header>
@@ -157,7 +157,7 @@ export const ResetPassword: React.FC = () => {
       {/* Header */}
       <header className="flex items-center justify-between border-b border-gray-700 px-10 py-3">
         <div className="flex items-center gap-4">
-          <div className="w-4 h-4 bg-blue-500 rounded-sm"></div>
+          <TrendingUp className="w-8 h-8 text-blue-400" />
           <h1 className="text-white text-lg font-bold">TradeWise</h1>
         </div>
         <div className="flex items-center gap-8">
@@ -165,9 +165,15 @@ export const ResetPassword: React.FC = () => {
             <Link to="/" className="text-white text-sm font-medium hover:text-blue-400 transition-colors">
               Home
             </Link>
-            <span className="text-white text-sm font-medium">Features</span>
-            <span className="text-white text-sm font-medium">Pricing</span>
-            <span className="text-white text-sm font-medium">Support</span>
+            <Link to="/features" className="text-white text-sm font-medium hover:text-blue-400 transition-colors">
+              Features
+            </Link>
+            <Link to="/pricing" className="text-white text-sm font-medium hover:text-blue-400 transition-colors">
+              Pricing
+            </Link>
+            <Link to="/support" className="text-white text-sm font-medium hover:text-blue-400 transition-colors">
+              Support
+            </Link>
           </nav>
           <Link
             to="/register"

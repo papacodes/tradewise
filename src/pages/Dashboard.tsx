@@ -75,6 +75,25 @@ export const Dashboard: React.FC = React.memo(() => {
     document.title = 'Dashboard - TradeWise';
   }, []);
 
+  // Helper function to calculate percentage change
+  const calculatePercentageChange = useCallback((current: number, previous: number): number => {
+    if (previous === 0) {
+      return current > 0 ? 100 : 0;
+    }
+    return ((current - previous) / previous) * 100;
+  }, []);
+
+  // Helper function to get trades from a specific time period
+  const getTradesFromPeriod = useCallback((trades: Trade[], daysAgo: number): Trade[] => {
+    const cutoffDate = new Date();
+    cutoffDate.setDate(cutoffDate.getDate() - daysAgo);
+    
+    return trades.filter(trade => {
+      const tradeDate = new Date(trade.trade_date);
+      return tradeDate >= cutoffDate;
+    });
+  }, []);
+
   const calculateStats = useCallback((trades: Trade[]) => {
     const totalTrades = trades.length;
     const winningTrades = trades.filter(trade => trade.is_profitable).length;
@@ -88,17 +107,47 @@ export const Dashboard: React.FC = React.memo(() => {
       return sum;
     }, 0);
 
-    // For demo purposes, we'll use mock data for changes
+    // Calculate time-based comparisons (last 30 days vs previous 30 days)
+    const last30DaysTrades = getTradesFromPeriod(trades, 30);
+    const previous30DaysTrades = trades.filter(trade => {
+      const tradeDate = new Date(trade.trade_date);
+      const thirtyDaysAgo = new Date();
+      const sixtyDaysAgo = new Date();
+      thirtyDaysAgo.setDate(thirtyDaysAgo.getDate() - 30);
+      sixtyDaysAgo.setDate(sixtyDaysAgo.getDate() - 60);
+      return tradeDate >= sixtyDaysAgo && tradeDate < thirtyDaysAgo;
+    });
+
+    // Calculate percentage changes
+    const totalTradesChange = calculatePercentageChange(
+      last30DaysTrades.length,
+      previous30DaysTrades.length
+    );
+
+    const last30DaysPL = last30DaysTrades.reduce((sum, trade) => sum + (trade.pnl_amount || 0), 0);
+    const previous30DaysPL = previous30DaysTrades.reduce((sum, trade) => sum + (trade.pnl_amount || 0), 0);
+    const currentPLChange = calculatePercentageChange(last30DaysPL, previous30DaysPL);
+
+    // Calculate cumulative P&L change (comparing current total vs 3 months ago)
+    const threeMonthsAgoTrades = trades.filter(trade => {
+      const tradeDate = new Date(trade.trade_date);
+      const threeMonthsAgo = new Date();
+      threeMonthsAgo.setMonth(threeMonthsAgo.getMonth() - 3);
+      return tradeDate < threeMonthsAgo;
+    });
+    const threeMonthsAgoPL = threeMonthsAgoTrades.reduce((sum, trade) => sum + (trade.pnl_amount || 0), 0);
+    const cumulativePLChange = calculatePercentageChange(currentPL, threeMonthsAgoPL);
+
     setStats({
       totalTrades,
       currentPL,
-      cumulativePL: currentPL, // In a real app, this would be calculated differently
+      cumulativePL: currentPL,
       winRate,
-      totalTradesChange: 10, // Mock data
-      currentPLChange: currentPL > 0 ? 5 : -5, // Mock data
-      cumulativePLChange: 20, // Mock data
+      totalTradesChange,
+      currentPLChange,
+      cumulativePLChange,
     });
-  }, []);
+  }, [calculatePercentageChange, getTradesFromPeriod]);
 
   const generateChartData = useCallback((trades: Trade[]) => {
     // Group trades by month and calculate cumulative P&L
@@ -245,7 +294,7 @@ export const Dashboard: React.FC = React.memo(() => {
               </p>
               <div className="flex items-center gap-1 text-sm">
                 <span className="text-gray-400">Last 3 Months</span>
-                {formatPercentage(20)}
+                {formatPercentage(stats.cumulativePLChange)}
               </div>
             </div>
             
@@ -290,7 +339,7 @@ export const Dashboard: React.FC = React.memo(() => {
               </p>
               <div className="flex items-center gap-1 text-sm">
                 <span className="text-gray-400">Last Month</span>
-                {formatPercentage(10)}
+                {formatPercentage(stats.totalTradesChange)}
               </div>
             </div>
             

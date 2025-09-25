@@ -1,4 +1,4 @@
-import { useEffect } from 'react';
+import { useEffect, useState } from 'react';
 import { Link } from 'react-router-dom';
 import { 
   TrendingUp, 
@@ -14,10 +14,14 @@ import {
   Search,
   Users,
   Zap,
-  Shield
+  Shield,
+  Menu,
+  X
 } from 'lucide-react';
 
 export const Support = () => {
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+
   useEffect(() => {
     document.title = 'Support - TradeWise';
   }, []);
@@ -103,13 +107,15 @@ export const Support = () => {
   return (
     <div className="min-h-screen bg-[#121417] text-white">
       {/* Header */}
-      <header className="border-b border-gray-700 px-10 py-3">
+      <header className="border-b border-gray-700 px-4 sm:px-10 py-3">
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
-            <TrendingUp className="w-4 h-4 text-blue-500" />
+            <TrendingUp className="w-8 h-8 text-blue-400" />
             <span className="text-lg font-bold">TradeWise</span>
           </div>
-          <div className="flex items-center gap-8">
+          
+          {/* Desktop Navigation */}
+          <div className="hidden md:flex items-center gap-8">
             <nav className="flex items-center gap-9">
               <Link to="/" className="text-sm font-medium hover:text-blue-400 transition-colors">
                 Home
@@ -139,7 +145,83 @@ export const Support = () => {
               </Link>
             </div>
           </div>
+
+          {/* Mobile Menu Button */}
+          <button
+            className="md:hidden p-2 text-white hover:text-blue-400 transition-colors"
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            aria-label="Toggle mobile menu"
+          >
+            {isMobileMenuOpen ? <X className="w-6 h-6" /> : <Menu className="w-6 h-6" />}
+          </button>
         </div>
+
+        {/* Mobile Navigation */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden fixed inset-0 z-50 bg-[#121417] bg-opacity-95 backdrop-blur-sm">
+            <div className="flex flex-col h-full">
+              <div className="flex items-center justify-between p-4 border-b border-gray-700">
+                <div className="flex items-center gap-4">
+                  <TrendingUp className="w-8 h-8 text-blue-400" />
+                  <span className="text-lg font-bold">TradeWise</span>
+                </div>
+                <button
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="p-2 text-white hover:text-blue-400 transition-colors"
+                  aria-label="Close mobile menu"
+                >
+                  <X className="w-6 h-6" />
+                </button>
+              </div>
+              <nav className="flex flex-col space-y-4 p-6 flex-1">
+                <Link
+                  to="/"
+                  className="text-white hover:text-blue-400 transition-colors py-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Home
+                </Link>
+                <Link
+                  to="/features"
+                  className="text-white hover:text-blue-400 transition-colors py-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Features
+                </Link>
+                <Link
+                  to="/pricing"
+                  className="text-white hover:text-blue-400 transition-colors py-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Pricing
+                </Link>
+                <Link
+                  to="/support"
+                  className="text-blue-400 py-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Support
+                </Link>
+                <div className="pt-4 border-t border-gray-700">
+                  <Link
+                    to="/login"
+                    className="block text-white hover:text-blue-400 transition-colors py-2 mb-4"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Log In
+                  </Link>
+                  <Link
+                    to="/register"
+                    className="block bg-[#1273d4] hover:bg-blue-600 px-4 py-2 rounded-lg text-sm font-bold transition-colors text-center"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Sign Up
+                  </Link>
+                </div>
+              </nav>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* Hero Section */}

@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { useAuth } from '../hooks/useAuth';
-import { Eye, EyeOff } from 'lucide-react';
+import { Eye, EyeOff, Menu, X, TrendingUp } from 'lucide-react';
 import { toast } from 'sonner';
 import { validateEmail, checkRateLimit } from '../utils/validation';
 
@@ -20,6 +20,7 @@ type LoginFormData = z.infer<typeof loginSchema>;
 export const Login: React.FC = () => {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { signIn } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
@@ -101,25 +102,99 @@ export const Login: React.FC = () => {
       {/* Header */}
       <header className="flex items-center justify-between border-b border-gray-700 px-10 py-3">
         <div className="flex items-center gap-4">
-          <div className="w-4 h-4 bg-blue-500 rounded-sm"></div>
-          <h1 className="text-white text-lg font-bold">TradeWise</h1>
+          <TrendingUp className="w-8 h-8 text-blue-400" />
+          <h1 className="text-white text-lg font-bold">TradePro</h1>
         </div>
         <div className="flex items-center gap-8">
-          <nav className="flex items-center gap-9">
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center gap-9">
             <Link to="/" className="text-white text-sm font-medium hover:text-blue-400 transition-colors">
               Home
             </Link>
-            <span className="text-white text-sm font-medium">Features</span>
-            <span className="text-white text-sm font-medium">Pricing</span>
-            <span className="text-white text-sm font-medium">Support</span>
+            <Link to="/features" className="text-white text-sm font-medium hover:text-blue-400 transition-colors">
+              Features
+            </Link>
+            <Link to="/pricing" className="text-white text-sm font-medium hover:text-blue-400 transition-colors">
+              Pricing
+            </Link>
+            <Link to="/support" className="text-white text-sm font-medium hover:text-blue-400 transition-colors">
+              Support
+            </Link>
           </nav>
           <Link
             to="/register"
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors"
+            className="hidden md:block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors"
           >
             Get Started
           </Link>
+          
+          {/* Mobile Menu Button */}
+          <button
+            onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
+            className="md:hidden text-white hover:text-blue-400 transition-colors"
+            aria-label="Toggle mobile menu"
+          >
+            {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
+          </button>
         </div>
+        
+        {/* Mobile Navigation Menu */}
+        {isMobileMenuOpen && (
+          <div className="md:hidden">
+            <div className="fixed inset-0 z-50 bg-black bg-opacity-50" onClick={() => setIsMobileMenuOpen(false)} />
+            <div className="fixed top-0 right-0 h-full w-64 bg-gray-900 border-l border-gray-700 z-50 transform transition-transform duration-300 ease-in-out">
+              <div className="flex items-center justify-between p-4 border-b border-gray-700">
+                <span className="text-lg font-semibold text-white">Menu</span>
+                <button
+                  onClick={() => setIsMobileMenuOpen(false)}
+                  className="text-white hover:text-blue-400 transition-colors"
+                  aria-label="Close mobile menu"
+                >
+                  <X size={24} />
+                </button>
+              </div>
+              <nav className="flex flex-col p-4 space-y-4">
+                <Link
+                  to="/"
+                  className="text-white hover:text-blue-400 transition-colors py-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Home
+                </Link>
+                <Link
+                  to="/features"
+                  className="text-white hover:text-blue-400 transition-colors py-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Features
+                </Link>
+                <Link
+                  to="/pricing"
+                  className="text-white hover:text-blue-400 transition-colors py-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Pricing
+                </Link>
+                <Link
+                  to="/support"
+                  className="text-white hover:text-blue-400 transition-colors py-2"
+                  onClick={() => setIsMobileMenuOpen(false)}
+                >
+                  Support
+                </Link>
+                <div className="pt-4 border-t border-gray-700">
+                  <Link
+                    to="/register"
+                    className="block bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-center text-sm font-bold"
+                    onClick={() => setIsMobileMenuOpen(false)}
+                  >
+                    Get Started
+                  </Link>
+                </div>
+              </nav>
+            </div>
+          </div>
+        )}
       </header>
 
       {/* Main Content */}
