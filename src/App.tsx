@@ -5,6 +5,8 @@ import { AuthProvider } from './contexts/AuthContext';
 import { SubscriptionProvider } from './hooks/useSubscription';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import ErrorBoundary from './components/ErrorBoundary';
+import AuthFallbackModal from './components/AuthFallbackModal';
+import { useAuthFallback } from './hooks/useAuthFallback';
 
 // Eager load critical components
 import { Login } from './pages/Login';
@@ -20,6 +22,7 @@ const TradeLog = React.lazy(() => import('./pages/TradeLog').then(module => ({ d
 const Trades = React.lazy(() => import('./pages/Trades').then(module => ({ default: module.Trades })));
 const Analytics = React.lazy(() => import('./pages/Analytics').then(module => ({ default: module.Analytics })));
 const Profile = React.lazy(() => import('./pages/Profile'));
+const Checkout = React.lazy(() => import('./pages/Checkout').then(module => ({ default: module.Checkout })));
 const Features = React.lazy(() => import('./pages/Features').then(module => ({ default: module.Features })));
 const Pricing = React.lazy(() => import('./pages/Pricing').then(module => ({ default: module.Pricing })));
 const Support = React.lazy(() => import('./pages/Support').then(module => ({ default: module.Support })));
@@ -31,20 +34,15 @@ const LoadingSpinner = () => (
   </div>
 );
 
-function App() {
-  useEffect(() => {
-    // Add dark class to HTML element for Tailwind dark mode
-    document.documentElement.classList.add('dark');
-  }, []);
+// App content component that uses the auth fallback hook
+function AppContent() {
+  const { isOpen, reason, hideFallback, handleRetry } = useAuthFallback();
 
   return (
-    <ErrorBoundary>
-      <AuthProvider>
-        <SubscriptionProvider>
-          <Router>
-          <div className="min-h-screen bg-gray-900">
-            <Toaster position="top-right" theme="dark" />
-            <Suspense fallback={<LoadingSpinner />}>
+    <>
+      <div className="min-h-screen bg-gray-900">
+        <Toaster position="top-right" theme="dark" />
+        <Suspense fallback={<LoadingSpinner />}>
               <Routes>
                 {/* Public Routes */}
                 <Route path="/" element={<Landing />} />
@@ -120,12 +118,45 @@ function App() {
                   }
                 />
                 
+                <Route
+                  path="/checkout"
+                  element={
+                    <ProtectedRoute>
+                      <Checkout />
+                    </ProtectedRoute>
+                  }
+                />
+                
                 {/* Default redirect */}
-                <Route path="*" element={<Navigate to="/dashboard" replace />} />
+                <Route path="*" element={<Navigate to="/" replace />} />
               </Routes>
-            </Suspense>
-          </div>
-        </Router>
+        </Suspense>
+      </div>
+      
+      {/* Auth Fallback Modal */}
+      <AuthFallbackModal
+        isOpen={isOpen}
+        onClose={hideFallback}
+        reason={reason}
+        onRetry={handleRetry}
+      />
+    </>
+  );
+}
+
+function App() {
+  useEffect(() => {
+    // Add dark class to HTML element for Tailwind dark mode
+    document.documentElement.classList.add('dark');
+  }, []);
+
+  return (
+    <ErrorBoundary>
+      <AuthProvider>
+        <SubscriptionProvider>
+          <Router>
+            <AppContent />
+          </Router>
         </SubscriptionProvider>
       </AuthProvider>
     </ErrorBoundary>

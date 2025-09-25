@@ -3,6 +3,7 @@ import { User, Session, AuthError } from '@supabase/supabase-js';
 import { supabase } from '../lib/supabase';
 import { clearAllCaches } from '../utils/cacheManager';
 import { clearAllCache } from '../hooks/useSupabaseCache';
+import { cacheRefreshService } from '../utils/cacheRefreshService';
 
 interface AuthContextType {
   user: User | null;
@@ -61,6 +62,13 @@ const AuthProviderComponent: React.FC<{ children: React.ReactNode }> = ({ childr
         // Create or update profile when user signs up or signs in
         if (event === 'SIGNED_IN' && session?.user) {
           await createOrUpdateProfile(session.user);
+          // Initialize cache refresh strategies for the user
+          cacheRefreshService.initializeDefaultStrategies(session.user.id);
+        }
+        
+        // Clear refresh strategies when user signs out
+        if (event === 'SIGNED_OUT') {
+          cacheRefreshService.clearRefreshAttempts();
         }
       }
     );
@@ -194,3 +202,12 @@ const AuthProviderComponent: React.FC<{ children: React.ReactNode }> = ({ childr
 
 export const AuthProvider = AuthProviderComponent;
 export { AuthContext };
+
+// Custom hook to use the AuthContext
+export const useAuth = () => {
+  const context = React.useContext(AuthContext);
+  if (context === undefined) {
+    throw new Error('useAuth must be used within an AuthProvider');
+  }
+  return context;
+};

@@ -1,5 +1,7 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { supabase } from '../lib/supabase';
+import { monitorAsyncOperation, cacheHealthMonitor } from '../utils/cacheHealthMonitor';
+import { cacheCorruptionDetector } from '../utils/cacheCorruptionDetector';
 
 interface CacheEntry<T> {
   data: T;
@@ -12,6 +14,9 @@ interface CacheOptions {
   staleWhileRevalidate?: boolean;
   refetchOnWindowFocus?: boolean;
   refetchInterval?: number;
+  timeout?: number; // Operation timeout in milliseconds
+  retryAttempts?: number; // Number of retry attempts
+  retryDelay?: number; // Base delay between retries in milliseconds
 }
 
 interface UseSupabaseCacheResult<T> {
@@ -137,7 +142,10 @@ export const useSupabaseCache = <T>(
     ttl = 5 * 60 * 1000, // 5 minutes default
     staleWhileRevalidate = true,
     refetchOnWindowFocus = false,
-    refetchInterval
+    refetchInterval,
+    timeout = 30000, // 30 seconds default
+    retryAttempts = 3,
+    retryDelay = 1000
   } = options;
 
   // Stabilize the query function to prevent re-fetch loops
@@ -152,7 +160,7 @@ export const useSupabaseCache = <T>(
   const intervalRef = useRef<NodeJS.Timeout | null>(null);
   const mountedRef = useRef(true);
 
-  const fetchData = useCallback(async (useCache: boolean = true): Promise<void> => {
+  const fetchData = useCallback(async (useCache: boolean = true, attemptNumber: number = 0): Promise<void> => {
     if (!mountedRef.current) {
       return;
     }
@@ -179,8 +187,12 @@ export const useSupabaseCache = <T>(
         }
       }
 
-      // Fetch fresh data using stabilized ref
-      const result = await queryFnRef.current();
+      // Use health monitor to wrap the operation with timeout and monitoring
+      const result = await monitorAsyncOperation(
+        () => queryFnRef.current(),
+        `cache-fetch-${cacheKey}`,
+        timeout
+      );
 
       if (!mountedRef.current) {
         return;
@@ -196,6 +208,10 @@ export const useSupabaseCache = <T>(
         if (mountedRef.current) {
           setData(result.data);
         }
+        // Reset recovery attempts on successful operation
+        cacheHealthMonitor.resetRecoveryAttempts();
+        // Report successful operation to corruption detector
+        cacheCorruptionDetector.reportSuccess(cacheKey);
       } else {
         if (mountedRef.current) {
           setData(null);
@@ -209,17 +225,35 @@ export const useSupabaseCache = <T>(
         return;
       }
       const errorObj = err instanceof Error ? err : new Error('Unknown error');
+      
+      // Report error to corruption detector
+      cacheCorruptionDetector.reportError(cacheKey, errorObj);
+      
+      // Implement retry logic with exponential backoff
+      if (attemptNumber < retryAttempts) {
+        const delay = retryDelay * Math.pow(2, attemptNumber); // Exponential backoff
+        console.warn(`🔄 Retrying cache fetch (attempt ${attemptNumber + 1}/${retryAttempts}) after ${delay}ms:`, errorObj.message);
+        
+        setTimeout(() => {
+          if (mountedRef.current) {
+            fetchData(useCache, attemptNumber + 1);
+          }
+        }, delay);
+        return;
+      }
+      
       setError(errorObj);
+      console.error('Cache fetch error (all retries exhausted):', errorObj);
     } finally {
       if (mountedRef.current) {
         setLoading(false);
       }
     }
-  }, [cacheKey, ttl, staleWhileRevalidate]);
+  }, [cacheKey, ttl, staleWhileRevalidate, timeout, retryAttempts, retryDelay]);
 
   const refetch = useCallback(async (): Promise<void> => {
     setLoading(true);
-    await fetchData(false); // Force fresh fetch
+    await fetchData(false, 0); // Force fresh fetch, reset attempt counter
   }, [fetchData]);
 
   const invalidate = useCallback((): void => {
@@ -306,19 +340,18 @@ export const useCachedTrades = (userId?: string, accountIds?: string[]) => {
         query = query.in('account_id', accountIds);
       }
       
-      return await query;
+      const result = await query;
+      return { data: result.data || [], error: result.error };
     };
   }, [userId, accountIds]);
 
-  return useSupabaseCache(
-    generateCacheKey('trades', { userId, accountIds }),
-    queryFn,
-    {
-      ttl: 5 * 60 * 1000, // 5 minutes
-      refetchOnWindowFocus: false, // Disable to prevent refresh loops
-      // Remove refetchInterval to prevent automatic refreshing
-    }
-  );
+  const cacheKey = `trades_${userId}_${accountIds?.join(',') || 'all'}`;
+  return useSupabaseCache(cacheKey, queryFn, { 
+    ttl: 2 * 60 * 1000, // 2 minutes TTL
+    timeout: 15000, // 15 seconds timeout for trades
+    retryAttempts: 2,
+    retryDelay: 500
+  });
 };
 
 export const useCachedAccounts = (userId?: string) => {
@@ -335,34 +368,17 @@ export const useCachedAccounts = (userId?: string) => {
       .eq('user_id', userId)
       .order('created_at', { ascending: false });
     
-    return result;
+    return { data: result.data || [], error: result.error };
   }, [userId]);
 
-  // Don't use cache if userId is undefined
-  const shouldFetch = !!userId;
-  
-  const cacheResult = useSupabaseCache(
-    shouldFetch ? generateCacheKey('trading_accounts', { userId }) : 'disabled',
-    queryFn,
-    {
-      ttl: 5 * 60 * 1000, // 5 minutes
-      refetchOnWindowFocus: false, // Disable to prevent refresh loops
-      // Remove refetchInterval to prevent automatic refreshing
-    }
-  );
-
-  // Return empty state when userId is not available
-  if (!shouldFetch) {
-    return {
-      data: [],
-      loading: false,
-      error: null,
-      refetch: async () => {},
-      invalidate: () => {}
-    };
-  }
-
-  return cacheResult;
+  const cacheKey = `trading_accounts_${userId}`;
+  return useSupabaseCache(cacheKey, queryFn, { 
+    ttl: 5 * 60 * 1000, // 5 minutes TTL
+    staleWhileRevalidate: true,
+    timeout: 20000, // 20 seconds timeout for accounts
+    retryAttempts: 3,
+    retryDelay: 1000
+  });
 };
 
 export const useCachedUserProfile = (userId?: string) => {
@@ -378,22 +394,16 @@ export const useCachedUserProfile = (userId?: string) => {
         .eq('id', userId)
         .maybeSingle();
       
-      // If no profile exists, return null data without error
-      if (!result.data && !result.error) {
-        return { data: null, error: null };
-      }
-      
-      return result;
+      return { data: result.data, error: result.error };
     };
   }, [userId]);
 
-  return useSupabaseCache(
-    generateCacheKey('profiles', { userId }),
-    queryFn,
-    {
-      ttl: 10 * 60 * 1000, // 10 minutes
-      refetchOnWindowFocus: false, // Disable to prevent refresh loops
-      // Remove refetchInterval to prevent automatic refreshing
-    }
-  );
+  const cacheKey = `profile_${userId}`;
+  return useSupabaseCache(cacheKey, queryFn, { 
+    ttl: 10 * 60 * 1000, // 10 minutes TTL
+    staleWhileRevalidate: true,
+    timeout: 10000, // 10 seconds timeout for profile
+    retryAttempts: 2,
+    retryDelay: 750
+  });
 };

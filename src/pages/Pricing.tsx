@@ -1,5 +1,6 @@
 import React, { useEffect, useCallback, useMemo, useState } from 'react';
 import { Link } from 'react-router-dom';
+import { useAuth } from '../hooks/useAuth';
 import { 
   TrendingUp, 
   Check, 
@@ -14,6 +15,8 @@ import {
 
 export const Pricing = React.memo(() => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
+  const { user, loading } = useAuth();
+  
   useEffect(() => {
     document.title = 'Pricing - TradeWise';
   }, []);
@@ -36,9 +39,9 @@ export const Pricing = React.memo(() => {
         { name: "Multiple accounts", included: false },
         { name: "Priority support", included: false }
       ],
-      cta: "Get Started Free",
+      cta: user ? "Current Plan" : "Get Started Free",
       popular: false,
-      ctaLink: "/register"
+      ctaLink: user ? "/dashboard" : "/register"
     },
     {
       name: "Professional",
@@ -57,9 +60,9 @@ export const Pricing = React.memo(() => {
         { name: "API access", included: false },
         { name: "White-label solution", included: false }
       ],
-      cta: "Start Free Trial",
+      cta: user ? "Upgrade Now" : "Start Free Trial",
       popular: true,
-      ctaLink: "/register"
+      ctaLink: user ? "/checkout?plan=professional" : "/register"
     },
     {
       name: "Enterprise",
@@ -82,7 +85,7 @@ export const Pricing = React.memo(() => {
       popular: false,
       ctaLink: "/support"
     }
-  ], []);
+  ], [user]);
 
   const handlePlanClick = useCallback((ctaLink: string) => {
     // This could be used for analytics tracking
@@ -116,18 +119,29 @@ export const Pricing = React.memo(() => {
               </Link>
             </nav>
             <div className="flex items-center gap-4">
-              <Link
-                to="/login"
-                className="text-sm font-medium hover:text-blue-400 transition-colors px-4 py-2"
-              >
-                Log In
-              </Link>
-              <Link
-                to="/register"
-                className="bg-[#1273d4] hover:bg-blue-600 px-4 py-2 rounded-lg text-sm font-bold transition-colors"
-              >
-                Sign Up
-              </Link>
+              {user ? (
+                <Link
+                  to="/dashboard"
+                  className="bg-[#1273d4] hover:bg-blue-600 px-4 py-2 rounded-lg text-sm font-bold transition-colors"
+                >
+                  Dashboard
+                </Link>
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    className="text-sm font-medium hover:text-blue-400 transition-colors px-4 py-2"
+                  >
+                    Log In
+                  </Link>
+                  <Link
+                    to="/register"
+                    className="bg-[#1273d4] hover:bg-blue-600 px-4 py-2 rounded-lg text-sm font-bold transition-colors"
+                  >
+                    Sign Up
+                  </Link>
+                </>
+              )}
             </div>
           </div>
 
@@ -186,20 +200,32 @@ export const Pricing = React.memo(() => {
                   Support
                 </Link>
                 <div className="pt-4 border-t border-gray-700">
-                  <Link
-                    to="/login"
-                    className="block text-sm font-medium hover:text-blue-400 transition-colors py-2 mb-2"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Log In
-                  </Link>
-                  <Link
-                    to="/register"
-                    className="block bg-[#1273d4] hover:bg-blue-600 px-4 py-2 rounded-lg text-sm font-bold transition-colors text-center"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Sign Up
-                  </Link>
+                  {user ? (
+                    <Link
+                      to="/dashboard"
+                      className="block bg-[#1273d4] hover:bg-blue-600 px-4 py-2 rounded-lg text-sm font-bold transition-colors text-center"
+                      onClick={() => setIsMobileMenuOpen(false)}
+                    >
+                      Dashboard
+                    </Link>
+                  ) : (
+                    <>
+                      <Link
+                        to="/login"
+                        className="block text-sm font-medium hover:text-blue-400 transition-colors py-2 mb-2"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Log In
+                      </Link>
+                      <Link
+                        to="/register"
+                        className="block bg-[#1273d4] hover:bg-blue-600 px-4 py-2 rounded-lg text-sm font-bold transition-colors text-center"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Sign Up
+                      </Link>
+                    </>
+                  )}
                 </div>
               </nav>
             </div>

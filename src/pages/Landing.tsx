@@ -1,30 +1,26 @@
 import { useState } from 'react';
 import { useEffect } from 'react';
 import { Link } from 'react-router-dom';
-import { TrendingUp, BarChart3, Shield, Zap, ArrowRight, Menu, X } from 'lucide-react';
-// import { useAuth } from '../hooks/useAuth'; // Commented out as not currently used
+import { TrendingUp, BarChart3, Shield, Zap, ArrowRight, Menu, X, User, LogOut } from 'lucide-react';
+import { useAuth } from '../hooks/useAuth';
 import { clearAllCache } from '../hooks/useSupabaseCache';
 
 export const Landing = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
-  // const { user } = useAuth(); // Commented out as not currently used
+  const { user, signOut } = useAuth();
 
-  // Clear caches when landing on the page (but don't force signout)
+  // Initialize page without clearing authentication storage
   useEffect(() => {
     document.title = 'TradeWise - Trading Platform';
     
     const initializeCleanState = async () => {
       try {
-        console.log('🎯 Landing page: Initializing clean cache state (FIXED VERSION)...');
+        console.log('🎯 Landing page: Initializing clean cache state (AUTH-SAFE VERSION)...');
         
-        // Clear in-memory cache for fresh start
+        // Only clear in-memory cache, preserve authentication storage
         clearAllCache();
         
-        // Initialize cache management but skip reload to prevent infinite refresh
-        const { clearAllCaches } = await import('../utils/cacheManager');
-        await clearAllCaches({ skipReload: true, logOperations: true });
-        
-        console.log('✅ Landing page initialized with clean cache state');
+        console.log('✅ Landing page initialized with clean cache state (auth preserved)');
       } catch (error) {
         console.error('❌ Error during landing page cache initialization:', error);
       }
@@ -60,18 +56,41 @@ export const Landing = () => {
               </Link>
             </nav>
             <div className="flex items-center gap-4">
-              <Link
-                to="/login"
-                className="text-sm font-medium hover:text-blue-400 transition-colors px-4 py-2"
-              >
-                Log In
-              </Link>
-              <Link
-                to="/register"
-                className="bg-[#1273d4] hover:bg-blue-600 px-4 py-2 rounded-lg text-sm font-bold transition-colors"
-              >
-                Sign Up
-              </Link>
+              {user ? (
+                <>
+                  <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                    <User size={16} className="text-white" />
+                  </div>
+                  <Link
+                    to="/dashboard"
+                    className="text-sm font-medium hover:text-blue-400 transition-colors px-4 py-2"
+                  >
+                    Dashboard
+                  </Link>
+                  <button
+                    onClick={signOut}
+                    className="flex items-center gap-2 px-3 py-1.5 text-sm font-medium text-gray-300 hover:text-white bg-gray-800 hover:bg-gray-700 rounded-md transition-colors border border-gray-600"
+                  >
+                    <LogOut size={14} />
+                    Logout
+                  </button>
+                </>
+              ) : (
+                <>
+                  <Link
+                    to="/login"
+                    className="text-sm font-medium hover:text-blue-400 transition-colors px-4 py-2"
+                  >
+                    Log In
+                  </Link>
+                  <Link
+                    to="/register"
+                    className="bg-[#1273d4] hover:bg-blue-600 px-4 py-2 rounded-lg text-sm font-bold transition-colors"
+                  >
+                    Sign Up
+                  </Link>
+                </>
+              )}
             </div>
           </div>
 
@@ -130,20 +149,50 @@ export const Landing = () => {
                   Support
                 </Link>
                 <div className="pt-4 border-t border-gray-800">
-                  <Link
-                    to="/login"
-                    className="block text-gray-300 hover:text-white transition-colors py-2 mb-2"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Log In
-                  </Link>
-                  <Link
-                    to="/register"
-                    className="block bg-[#1273d4] hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors text-center"
-                    onClick={() => setIsMobileMenuOpen(false)}
-                  >
-                    Sign Up
-                  </Link>
+                  {user ? (
+                    <>
+                      <div className="flex items-center gap-3 mb-4">
+                        <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
+                          <User size={16} className="text-white" />
+                        </div>
+                        <span className="text-white text-sm">{user.email}</span>
+                      </div>
+                      <Link
+                        to="/dashboard"
+                        className="block text-gray-300 hover:text-white transition-colors py-2 mb-2"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Dashboard
+                      </Link>
+                      <button
+                        onClick={() => {
+                          setIsMobileMenuOpen(false);
+                          signOut();
+                        }}
+                        className="flex items-center gap-2 w-full text-left text-gray-300 hover:text-white transition-colors py-2"
+                      >
+                        <LogOut size={14} />
+                        Logout
+                      </button>
+                    </>
+                  ) : (
+                    <>
+                      <Link
+                        to="/login"
+                        className="block text-gray-300 hover:text-white transition-colors py-2 mb-2"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Log In
+                      </Link>
+                      <Link
+                        to="/register"
+                        className="block bg-[#1273d4] hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors text-center"
+                        onClick={() => setIsMobileMenuOpen(false)}
+                      >
+                        Sign Up
+                      </Link>
+                    </>
+                  )}
                 </div>
               </nav>
             </div>

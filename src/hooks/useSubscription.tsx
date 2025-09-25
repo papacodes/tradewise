@@ -13,7 +13,7 @@ interface SubscriptionContextType {
   loading: boolean;
   error: string | null;
   canCreateAccount: boolean;
-  accountCounts: number;
+  accountCounts: { accounts: number };
   maxAccounts: number;
   refreshSubscription: () => Promise<void>;
   checkAccountLimit: () => Promise<boolean>;
@@ -127,7 +127,7 @@ export const SubscriptionProvider = ({ children }: { children: ReactNode }) => {
     loading,
     error,
     canCreateAccount,
-    accountCounts: accountCount,
+    accountCounts: { accounts: accountCount },
     maxAccounts,
     refreshSubscription: fetchSubscription,
     checkAccountLimit,

@@ -231,3 +231,39 @@ export const initializeCacheManagement = async (): Promise<void> => {
     await clearAllCaches({ skipReload: false, logOperations: false });
   }
 };
+
+/**
+ * Cache manager object that groups all cache management functions
+ */
+export const cacheManager = {
+  clearAllCaches,
+  clearLocalStorage,
+  clearSessionStorage,
+  clearIndexedDB,
+  clearServiceWorkerCaches,
+  unregisterServiceWorkers,
+  forceCacheRefresh,
+  shouldClearCache,
+  updateCacheVersion,
+  isDevelopmentMode,
+  clearCacheInDevelopment,
+  manualCacheClear,
+  initializeCacheManagement,
+  
+  // Additional methods for cache key management
+  clearCache: async (cacheKey: string): Promise<void> => {
+    try {
+      // Clear from localStorage
+      localStorage.removeItem(cacheKey);
+      // Clear from sessionStorage
+      sessionStorage.removeItem(cacheKey);
+      console.log(`✅ Cache cleared for key: ${cacheKey}`);
+    } catch (error) {
+      console.error(`❌ Failed to clear cache for key ${cacheKey}:`, error);
+    }
+  },
+  
+  invalidateKey: async (cacheKey: string): Promise<void> => {
+    await cacheManager.clearCache(cacheKey);
+  }
+};
