@@ -232,7 +232,7 @@ export const useSupabaseCache = <T>(
       // Silently handle errors in background refresh
       void error;
     });
-  }, [cacheKey]); // Remove fetchData from dependencies to prevent infinite loops
+  }, []); // Empty dependency array to prevent infinite loops
 
   // Setup refetch interval
   useEffect(() => {
@@ -310,9 +310,9 @@ export const useCachedTrades = (userId?: string, accountIds?: string[]) => {
     generateCacheKey('trades', { userId, accountIds }),
     queryFn,
     {
-      ttl: 2 * 60 * 1000, // 2 minutes
-      refetchOnWindowFocus: true,
-      refetchInterval: 5 * 60 * 1000, // 5 minutes
+      ttl: 5 * 60 * 1000, // 5 minutes
+      refetchOnWindowFocus: false, // Disable to prevent refresh loops
+      // Remove refetchInterval to prevent automatic refreshing
     }
   );
 };
@@ -336,8 +336,8 @@ export const useCachedAccounts = (userId?: string) => {
     queryFn,
     {
       ttl: 5 * 60 * 1000, // 5 minutes
-      refetchOnWindowFocus: true,
-      refetchInterval: 10 * 60 * 1000, // 10 minutes
+      refetchOnWindowFocus: false, // Disable to prevent refresh loops
+      // Remove refetchInterval to prevent automatic refreshing
     }
   );
 };
@@ -369,8 +369,8 @@ export const useCachedUserProfile = (userId?: string) => {
     queryFn,
     {
       ttl: 10 * 60 * 1000, // 10 minutes
-      refetchOnWindowFocus: true,
-      refetchInterval: 15 * 60 * 1000, // 15 minutes
+      refetchOnWindowFocus: false, // Disable to prevent refresh loops
+      // Remove refetchInterval to prevent automatic refreshing
     }
   );
 };
