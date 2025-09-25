@@ -24,6 +24,7 @@ export const ResetPassword: React.FC = () => {
   const [isLoading, setIsLoading] = useState(false);
   const [isSuccess, setIsSuccess] = useState(false);
   const [isValidToken, setIsValidToken] = useState<boolean | null>(null);
+  const [authError, setAuthError] = useState<string | null>(null);
   const [searchParams] = useSearchParams();
   const navigate = useNavigate();
 
@@ -46,24 +47,36 @@ export const ResetPassword: React.FC = () => {
     // Check if we have valid reset tokens in the URL
     const accessToken = searchParams.get('access_token');
     const refreshToken = searchParams.get('refresh_token');
+    const type = searchParams.get('type');
     
-    if (accessToken && refreshToken) {
-      // Set the session with the tokens from the URL
-      supabase.auth.setSession({
-        access_token: accessToken,
-        refresh_token: refreshToken,
-      }).then(({ error }) => {
-        if (error) {
-          console.error('Error setting session:', error);
-          setIsValidToken(false);
-        } else {
-          setIsValidToken(true);
-        }
-      });
+    // Validate that this is a password reset link with required parameters
+    if (accessToken && refreshToken && type === 'recovery') {
+      setIsValidToken(true);
+      // Let Supabase handle the session automatically through auth state listener
     } else {
       setIsValidToken(false);
+      setAuthError('Invalid or missing reset parameters in the URL.');
     }
-  }, [searchParams]);
+
+    // Listen for auth state changes to handle session automatically
+    const { data: { subscription } } = supabase.auth.onAuthStateChange(
+      async (event) => {
+        if (event === 'PASSWORD_RECOVERY') {
+          // User has successfully authenticated via the reset link
+          setIsValidToken(true);
+          setAuthError(null);
+        } else if (event === 'SIGNED_OUT' && isValidToken) {
+          // Session expired or invalid
+          setIsValidToken(false);
+          setAuthError('Your session has expired. Please request a new password reset link.');
+        }
+      }
+    );
+
+    return () => {
+      subscription.unsubscribe();
+    };
+  }, [searchParams, isValidToken]);
 
   const onSubmit = async (data: ResetPasswordFormData) => {
     setIsLoading(true);
@@ -126,7 +139,7 @@ export const ResetPassword: React.FC = () => {
               Invalid or Expired Link
             </h2>
             <p className="text-gray-300 text-base mb-8">
-              This password reset link is invalid or has expired. Please request a new password reset.
+              {authError || 'This password reset link is invalid or has expired. Please request a new password reset.'}
             </p>
             
             <div className="space-y-4">
