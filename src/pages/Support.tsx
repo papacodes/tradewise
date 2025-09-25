@@ -23,7 +23,7 @@ export const Support = () => {
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   useEffect(() => {
-    document.title = 'Support - TradeWise';
+    document.title = 'Support - TradeTrackr';
   }, []);
 
   const contactMethods = [
@@ -31,7 +31,7 @@ export const Support = () => {
       icon: <Mail className="w-8 h-8 text-blue-400" />,
       title: "Email Support",
       description: "Get help via email within 24 hours",
-      contact: "support@tradewise.com",
+      contact: "support@tradetrackr.com",
       availability: "24/7"
     },
     {
@@ -79,12 +79,12 @@ export const Support = () => {
 
   const faqs = [
     {
-      question: "How do I get started with TradeWise?",
+      question: "How do I get started with TradeTrackr?",
       answer: "Simply sign up for a free account, connect your trading account, and start logging your trades. Our onboarding guide will walk you through the setup process."
     },
     {
       question: "Can I import my existing trade data?",
-      answer: "Yes! TradeWise supports importing trade data from CSV files and popular trading platforms. You can bulk import your historical trades to get started quickly."
+      answer: "Yes! TradeTrackr supports importing trade data from CSV files and popular trading platforms. You can bulk import your historical trades to get started quickly."
     },
     {
       question: "Is my trading data secure?",
@@ -92,7 +92,7 @@ export const Support = () => {
     },
     {
       question: "What trading platforms do you support?",
-      answer: "TradeWise works with most major trading platforms including MetaTrader, TradingView, Interactive Brokers, and many others. You can also manually log trades from any platform."
+      answer: "TradeTrackr works with most major trading platforms including MetaTrader, TradingView, Interactive Brokers, and many others. You can also manually log trades from any platform."
     },
     {
       question: "Can I cancel my subscription anytime?",
@@ -111,7 +111,7 @@ export const Support = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <TrendingUp className="w-8 h-8 text-blue-400" />
-            <span className="text-lg font-bold">TradeWise</span>
+            <span className="text-lg font-bold">TradeTrackr</span>
           </div>
           
           {/* Desktop Navigation */}
@@ -163,7 +163,7 @@ export const Support = () => {
               <div className="flex items-center justify-between p-4 border-b border-gray-700">
                 <div className="flex items-center gap-4">
                   <TrendingUp className="w-8 h-8 text-blue-400" />
-                  <span className="text-lg font-bold">TradeWise</span>
+                  <span className="text-lg font-bold">TradeTrackr</span>
                 </div>
                 <button
                   onClick={() => setIsMobileMenuOpen(false)}
@@ -232,7 +232,7 @@ export const Support = () => {
             <span className="text-blue-400"> Help</span>
           </h1>
           <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
-            Get the support you need to make the most of TradeWise. Our team is ready to help you succeed.
+            Get the support you need to make the most of TradeTrackr. Our team is ready to help you succeed.
           </p>
           <div className="relative max-w-md mx-auto">
             <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 w-5 h-5 text-gray-400" />
@@ -331,7 +331,7 @@ export const Support = () => {
       <section className="px-10 py-20 bg-[#1a1d23]">
         <div className="max-w-6xl mx-auto">
           <h2 className="text-3xl font-bold text-center mb-16">
-            Why Choose TradeWise Support?
+            Why Choose TradeTrackr Support?
           </h2>
           
           <div className="grid md:grid-cols-3 gap-8">
@@ -379,7 +379,7 @@ export const Support = () => {
           </p>
           <div className="flex flex-col sm:flex-row gap-4 justify-center">
             <a
-              href="mailto:support@tradewise.com"
+              href="mailto:support@tradetrackr.com"
               className="bg-[#1273d4] hover:bg-blue-600 text-white font-bold py-3 px-6 rounded-lg transition-colors inline-flex items-center justify-center gap-2"
             >
               <Mail className="w-5 h-5" />
@@ -402,7 +402,7 @@ export const Support = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <TrendingUp className="w-5 h-5 text-blue-500" />
-              <span className="font-bold">TradeWise</span>
+              <span className="font-bold">TradeTrackr</span>
             </div>
             <div className="flex items-center gap-8">
               <Link to="/features" className="text-sm text-gray-400 hover:text-white transition-colors">
@@ -417,7 +417,7 @@ export const Support = () => {
             </div>
           </div>
           <div className="mt-8 pt-8 border-t border-gray-800 text-center text-sm text-gray-400">
-            © 2024 TradeWise. All rights reserved.
+            © 2024 TradeTrackr. All rights reserved.
           </div>
         </div>
       </footer>

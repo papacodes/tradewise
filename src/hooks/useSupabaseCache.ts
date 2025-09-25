@@ -1,7 +1,6 @@
 import { useState, useEffect, useCallback, useRef, useMemo } from 'react';
 import { supabase } from '../lib/supabase';
 import { monitorAsyncOperation, cacheHealthMonitor } from '../utils/cacheHealthMonitor';
-import { cacheCorruptionDetector } from '../utils/cacheCorruptionDetector';
 
 interface CacheEntry<T> {
   data: T;
@@ -35,17 +34,17 @@ const MAX_CACHE_SIZE = 100;
 
 // Cache utilities
 // Top-level helper
-const generateCacheKey = (table: string, filters: Record<string, unknown> = {}): string => {
-  const filterString = Object.keys(filters)
-    .sort()
-    .map(key => {
-      const value = (filters as any)[key];
-      const normalized = Array.isArray(value) ? [...value].sort() : value;
-      return `${key}:${JSON.stringify(normalized)}`;
-    })
-    .join('|');
-  return `${table}${filterString ? `_${filterString}` : ''}`;
-};
+// const generateCacheKey = (table: string, filters: Record<string, unknown> = {}): string => {
+//   const filterString = Object.keys(filters)
+//     .sort()
+//     .map(key => {
+//       const value = (filters as any)[key];
+//       const normalized = Array.isArray(value) ? [...value].sort() : value;
+//       return `${key}:${JSON.stringify(normalized)}`;
+//     })
+//     .join('|');
+//   return `${table}${filterString ? `_${filterString}` : ''}`;
+// };
 
 const isStale = (entry: CacheEntry<unknown>): boolean => {
   return Date.now() - entry.timestamp > entry.ttl;
@@ -210,8 +209,6 @@ export const useSupabaseCache = <T>(
         }
         // Reset recovery attempts on successful operation
         cacheHealthMonitor.resetRecoveryAttempts();
-        // Report successful operation to corruption detector
-        cacheCorruptionDetector.reportSuccess(cacheKey);
       } else {
         if (mountedRef.current) {
           setData(null);
@@ -226,8 +223,8 @@ export const useSupabaseCache = <T>(
       }
       const errorObj = err instanceof Error ? err : new Error('Unknown error');
       
-      // Report error to corruption detector
-      cacheCorruptionDetector.reportError(cacheKey, errorObj);
+      // Log error for debugging
+      console.warn('Cache fetch error:', errorObj.message);
       
       // Implement retry logic with exponential backoff
       if (attemptNumber < retryAttempts) {

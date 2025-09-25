@@ -74,7 +74,7 @@ export const Dashboard: React.FC = React.memo(() => {
   const isLoading = accountsLoading || tradesLoading;
 
   useEffect(() => {
-    document.title = 'Dashboard - TradeWise';
+    document.title = 'Dashboard - TradeTrackr';
   }, []);
 
   // Helper function to calculate percentage change

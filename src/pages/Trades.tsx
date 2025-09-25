@@ -63,7 +63,7 @@ export const Trades: React.FC = React.memo(() => {
   const loading = accountsLoading || tradesLoading;
 
   useEffect(() => {
-    document.title = 'Trades - TradeWise';
+    document.title = 'Trades - TradeTrackr';
   }, []);
 
   // Handler functions

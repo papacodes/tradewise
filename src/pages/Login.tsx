@@ -44,7 +44,7 @@ export const Login: React.FC = () => {
   });
 
   useEffect(() => {
-    document.title = 'Login - TradeWise';
+    document.title = 'Login - TradeTrackr';
   }, []);
 
   // Redirect if user is already authenticated
@@ -155,7 +155,7 @@ export const Login: React.FC = () => {
       <header className="flex items-center justify-between border-b border-gray-700 px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
         <div className="flex items-center gap-2 sm:gap-3">
           <TrendingUp className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-blue-400" />
-          <h1 className="text-white text-base sm:text-lg lg:text-xl font-bold">TradeWise</h1>
+          <h1 className="text-white text-base sm:text-lg lg:text-xl font-bold">TradeTrackr</h1>
         </div>
         <div className="flex items-center gap-4 sm:gap-6 lg:gap-8">
           {/* Desktop Navigation */}
@@ -253,10 +253,10 @@ export const Login: React.FC = () => {
       <main className="flex-1 flex flex-col items-center justify-center spacing-responsive-md py-8 sm:py-12" role="main">
         <div className="w-full max-w-sm sm:max-w-md">
           <h2 className="text-white text-responsive-2xl font-bold text-center mb-2 sm:mb-3" id="login-heading">
-            Welcome to TradeWise
+            Welcome to TradeTrackr
           </h2>
           <p className="text-gray-300 text-center mb-6 sm:mb-8 text-responsive-sm leading-relaxed">
-            Track your trades, analyze your performance, and improve your trading strategy with TradeWise.
+            Track your trades, analyze your performance, and improve your trading strategy with TradeTrackr.
           </p>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" role="form" aria-labelledby="login-heading">

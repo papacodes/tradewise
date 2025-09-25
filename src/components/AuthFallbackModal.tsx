@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import { useState } from 'react';
 import { AlertTriangle, RefreshCw, LogOut } from 'lucide-react';
 import { useAuth } from '../contexts/AuthContext';
 import { cacheManager } from '../utils/cacheManager';
@@ -28,7 +28,7 @@ export default function AuthFallbackModal({
     
     try {
       // Clear all caches
-      await cacheManager.clearAll();
+      await cacheManager.clearAllCaches();
       
       // Wait a moment for cache clearing
       await new Promise(resolve => setTimeout(resolve, 1000));
@@ -56,7 +56,7 @@ export default function AuthFallbackModal({
     
     try {
       // Clear all caches first
-      await cacheManager.clearAll();
+      await cacheManager.clearAllCaches();
       
       // Sign out the user
       await signOut();

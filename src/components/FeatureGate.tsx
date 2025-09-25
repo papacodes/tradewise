@@ -3,8 +3,10 @@ import { useSubscription } from '../hooks/useSubscriptionHooks';
 import { canAccessFeature } from '../types/subscription';
 import UpgradePrompt from './UpgradePrompt';
 
+import { SubscriptionTier } from '../types/subscription';
+
 interface FeatureGateProps {
-  feature: string;
+  feature: SubscriptionTier;
   fallback?: React.ReactNode;
   showUpgradePrompt?: boolean;
   upgradePromptProps?: {

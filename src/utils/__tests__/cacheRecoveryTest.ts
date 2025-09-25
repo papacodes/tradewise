@@ -32,8 +32,8 @@ export async function testCacheHealthMonitoring(): Promise<boolean> {
   console.log('🧪 Testing cache health monitoring...');
   
   try {
-    // Start health monitoring
-    cacheHealthMonitor.startHealthChecks();
+    // Health monitoring starts automatically when instance is created
+    // No need to manually start health checks
     
     // Simulate a hanging operation
     const hangingPromise = new Promise((resolve) => {
@@ -42,10 +42,10 @@ export async function testCacheHealthMonitoring(): Promise<boolean> {
     });
     
     // Monitor the operation with a 2-second timeout
-    const monitoredPromise = cacheHealthMonitor.monitorAsyncOperation(
-      hangingPromise,
+    const monitoredPromise = cacheHealthMonitor.monitorOperation(
+      () => hangingPromise,
       'test_hanging_operation',
-      { timeout: 2000 }
+      2000
     );
     
     try {
@@ -147,11 +147,7 @@ export async function testCacheRefreshService(): Promise<boolean> {
     cacheRefreshService.initializeDefaultStrategies();
     
     // Test refresh strategy registration
-    const testStrategy = {
-      refreshFunction: async () => ({ test: 'refreshed_data' }),
-      priority: 1,
-      maxRetries: 2
-    };
+    const testStrategy = async () => ({ test: 'refreshed_data' });
     
     cacheRefreshService.registerRefreshStrategy('test_pattern', testStrategy);
     

@@ -41,7 +41,7 @@ interface AccountWithTrades extends TradingAccount {
 }
 
 export const Accounts: React.FC = () => {
-  const { user, loading: authLoading } = useAuth();
+  const { user } = useAuth();
   const navigate = useNavigate();
   const { subscriptionInfo, accountCounts, canCreateAccount } = useSubscription();
   const [showCreateModal, setShowCreateModal] = useState(false);
@@ -71,7 +71,7 @@ export const Accounts: React.FC = () => {
   const loading = accountsLoading || tradesLoading;
 
   useEffect(() => {
-    document.title = 'Accounts - TradeWise';
+    document.title = 'Accounts - TradeTrackr';
   }, []);
 
   // Process accounts with trades data
@@ -289,7 +289,7 @@ export const Accounts: React.FC = () => {
             <p className="text-sm sm:text-base text-gray-400">Manage your trading accounts and view recent trades</p>
           </div>
           <FeatureGate
-            feature="unlimited_accounts"
+            feature="enterprise"
             fallback={
               <button
                 onClick={() => {

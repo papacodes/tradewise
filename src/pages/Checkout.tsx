@@ -13,7 +13,7 @@ export const Checkout = React.memo(() => {
   const plan = searchParams.get('plan');
   
   useEffect(() => {
-    document.title = 'Checkout - TradeWise';
+    document.title = 'Checkout - TradeTrackr';
     
     // Redirect if not authenticated
     if (!loading && !user) {
@@ -112,7 +112,7 @@ export const Checkout = React.memo(() => {
         <div className="max-w-6xl mx-auto flex items-center justify-between">
           <div className="flex items-center gap-4">
             <TrendingUp className="w-6 h-6 text-blue-500" />
-            <span className="text-xl font-bold">TradeWise</span>
+            <span className="text-xl font-bold">TradeTrackr</span>
           </div>
           <Link
             to="/dashboard"

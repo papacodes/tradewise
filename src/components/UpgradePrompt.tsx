@@ -1,7 +1,7 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
 import { ArrowRight, Crown, Zap, X } from 'lucide-react';
-import { SubscriptionTier, SUBSCRIPTION_PLANS, getTierDisplayName } from '../types/subscription';
+import { SubscriptionTier, SUBSCRIPTION_PLANS } from '../types/subscription';
 import TierBadge from './TierBadge';
 
 interface UpgradePromptProps {
@@ -86,11 +86,11 @@ const UpgradePrompt: React.FC<UpgradePromptProps> = ({
             </p>
             
             <div className="space-y-2">
-              {recommendedPlan.features.slice(0, 3).map((feature, index) => (
-                feature.included && (
+              {recommendedPlan.features.slice(0, 3).map((planFeature, index) => (
+                planFeature.included && (
                   <div key={index} className="flex items-center gap-2 text-sm">
                     <div className="w-1.5 h-1.5 bg-green-400 rounded-full" />
-                    <span className="text-gray-300">{feature.name}</span>
+                    <span className="text-gray-300">{planFeature.name}</span>
                   </div>
                 )
               ))}

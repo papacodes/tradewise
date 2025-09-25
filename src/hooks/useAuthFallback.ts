@@ -1,6 +1,5 @@
 import { useState, useCallback, useEffect } from 'react';
 import { cacheHealthMonitor } from '../utils/cacheHealthMonitor';
-import { cacheCorruptionDetector } from '../utils/cacheCorruptionDetector';
 
 interface AuthFallbackState {
   isOpen: boolean;
@@ -35,8 +34,8 @@ export const useAuthFallback = () => {
       // Reset health monitor state
       cacheHealthMonitor.resetRecoveryAttempts();
       
-      // Clear corruption indicators
-      cacheCorruptionDetector.clearIndicators();
+      // Clear any cached corruption indicators
+      // This will be handled by the health monitor
       
       // Trigger a health check
       const isHealthy = await cacheHealthMonitor.performHealthCheck();
@@ -70,9 +69,9 @@ export const useAuthFallback = () => {
 
     // Add event listener for recovery events
     const originalTriggerRecovery = cacheHealthMonitor.triggerRecovery;
-    cacheHealthMonitor.triggerRecovery = (reason: string) => {
-      originalTriggerRecovery.call(cacheHealthMonitor, reason);
-      handleRecoveryNeeded(reason);
+    cacheHealthMonitor.triggerRecovery = async () => {
+      await originalTriggerRecovery.call(cacheHealthMonitor);
+      handleRecoveryNeeded('Cache recovery triggered');
     };
 
     // Cleanup
@@ -93,6 +92,7 @@ export const useAuthFallback = () => {
 
       return () => clearTimeout(resetTimer);
     }
+    return undefined;
   }, [fallbackState.retryCount, fallbackState.isOpen]);
 
   return {

@@ -1,8 +1,17 @@
 // Script to set up RLS policies for trading_accounts table
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = 'https://tfwoxmtooyzvldznoveu.supabase.co';
-const serviceRoleKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmd294bXRvb3l6dmxkem5vdmV1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1ODY0ODQ5MSwiZXhwIjoyMDc0MjI0NDkxfQ.eBJpZY7Ajus6gQo3jdP5odbBl58D22O1xkLPuiVaG2w';
+import dotenv from 'dotenv';
+dotenv.config();
+
+const supabaseUrl = process.env.VITE_SUPABASE_URL;
+const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!supabaseUrl || !serviceRoleKey) {
+  console.error('Missing required environment variables: VITE_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY');
+  console.error('Please check your .env file');
+  process.exit(1);
+}
 
 const supabase = createClient(supabaseUrl, serviceRoleKey);
 

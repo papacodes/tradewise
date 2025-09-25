@@ -25,7 +25,8 @@
   
   // Use test credentials (replace with actual test account)
   const testEmail = 'test@example.com';
-  const testPassword = 'testpassword123';
+  // Load environment variables if available
+const testPassword = process.env.TEST_USER_PASSWORD || 'testpassword123';
   
   console.log('⚠️ Using test credentials:', testEmail);
   console.log('⚠️ Make sure this test account exists in your Supabase project');

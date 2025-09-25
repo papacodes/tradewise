@@ -2,7 +2,6 @@ import { Component, ErrorInfo, ReactNode } from 'react';
 import { AlertTriangle, RefreshCw, Database } from 'lucide-react';
 import { cacheHealthMonitor } from '../utils/cacheHealthMonitor';
 import { cacheManager } from '../utils/cacheManager';
-import { cacheRefreshService } from '../utils/cacheRefreshService';
 
 interface Props {
   children: ReactNode;

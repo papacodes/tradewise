@@ -1,9 +1,18 @@
 // Test the exact API call that's failing
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = 'https://tfwoxmtooyzvldznoveu.supabase.co';
-const anonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmd294bXRvb3l6dmxkem5vdmV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NDg0OTEsImV4cCI6MjA3NDIyNDQ5MX0.NIXJia81vfXb-HqcN9tP_rEu8NtSs4V7d4n1ui3OYDM';
-const serviceRoleKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmd294bXRvb3l6dmxkem5vdmV1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1ODY0ODQ5MSwiZXhwIjoyMDc0MjI0NDkxfQ.eBJpZY7Ajus6gQo3jdP5odbBl58D22O1xkLPuiVaG2w';
+import dotenv from 'dotenv';
+dotenv.config();
+
+const supabaseUrl = process.env.VITE_SUPABASE_URL;
+const anonKey = process.env.VITE_SUPABASE_ANON_KEY;
+const serviceRoleKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!supabaseUrl || !anonKey || !serviceRoleKey) {
+  console.error('Missing required environment variables');
+  console.error('Please check your .env file for: VITE_SUPABASE_URL, VITE_SUPABASE_ANON_KEY, SUPABASE_SERVICE_ROLE_KEY');
+  process.exit(1);
+}
 
 async function testApiCall() {
   console.log('Testing the exact API call that failed...');

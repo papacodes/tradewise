@@ -39,7 +39,7 @@ export const Analytics: React.FC = React.memo(() => {
   const loading = accountsLoading || tradesLoading;
 
   useEffect(() => {
-    document.title = 'Analytics - TradeWise';
+    document.title = 'Analytics - TradeTrackr';
   }, []);
 
   const calculateAnalytics = useCallback(() => {

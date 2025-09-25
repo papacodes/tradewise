@@ -41,7 +41,7 @@ export const ResetPassword: React.FC = () => {
   const password = watch('password');
 
   useEffect(() => {
-    document.title = 'Reset Password - TradeWise';
+    document.title = 'Reset Password - TradeTrackr';
     
     // Check if we have valid reset tokens in the URL
     const accessToken = searchParams.get('access_token');
@@ -112,7 +112,7 @@ export const ResetPassword: React.FC = () => {
         <header className="flex items-center justify-between border-b border-gray-700 px-10 py-3">
           <div className="flex items-center gap-4">
             <TrendingUp className="w-8 h-8 text-blue-400" />
-            <h1 className="text-white text-lg font-bold">TradeWise</h1>
+            <h1 className="text-white text-lg font-bold">TradeTrackr</h1>
           </div>
         </header>
 
@@ -158,7 +158,7 @@ export const ResetPassword: React.FC = () => {
       <header className="flex items-center justify-between border-b border-gray-700 px-10 py-3">
         <div className="flex items-center gap-4">
           <TrendingUp className="w-8 h-8 text-blue-400" />
-          <h1 className="text-white text-lg font-bold">TradeWise</h1>
+          <h1 className="text-white text-lg font-bold">TradeTrackr</h1>
         </div>
         <div className="flex items-center gap-8">
           <nav className="flex items-center gap-9">

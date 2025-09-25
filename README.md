@@ -1,6 +1,6 @@
-# TradeWise - Advanced Trading Journal Platform
+# TradeTrackr - Advanced Trading Journal Platform
 
-A comprehensive trading journal and analytics platform built with React, TypeScript, and Supabase. TradeWise helps traders track their performance, analyze trading patterns, and improve their strategies through detailed trade logging and advanced analytics.
+A comprehensive trading journal and analytics platform built with React, TypeScript, and Supabase. TradeTrackr helps traders track their performance, analyze trading patterns, and improve their strategies through detailed trade logging and advanced analytics.
 
 ## 🚀 Features
 
@@ -243,4 +243,4 @@ This project is licensed under the MIT License.
 
 ---
 
-**TradeWise** - Empowering traders with data-driven insights and comprehensive trade management.
+**TradeTrackr** - Empowering traders with data-driven insights and comprehensive trade management.

@@ -1,8 +1,16 @@
 // Script to test authentication flow programmatically
 import { createClient } from '@supabase/supabase-js';
+import dotenv from 'dotenv';
+dotenv.config();
 
-const supabaseUrl = 'https://tfwoxmtooyzvldznoveu.supabase.co';
-const supabaseAnonKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmd294bXRvb3l6dmxkem5vdmV1Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTg2NDg0OTEsImV4cCI6MjA3NDIyNDQ5MX0.NIXJia81vfXb-HqcN9tP_rEu8NtSs4V7d4n1ui3OYDM';
+const supabaseUrl = process.env.VITE_SUPABASE_URL;
+const supabaseAnonKey = process.env.VITE_SUPABASE_ANON_KEY;
+
+if (!supabaseUrl || !supabaseAnonKey) {
+  console.error('Missing required environment variables: VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY');
+  console.error('Please check your .env file');
+  process.exit(1);
+}
 
 const supabase = createClient(supabaseUrl, supabaseAnonKey);
 
@@ -14,7 +22,7 @@ async function testAuthFlow() {
     console.log('Attempting to sign in...');
     const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
       email: 'test@example.com',
-      password: 'testpass123'
+      password: process.env.TEST_USER_PASSWORD || 'testpass123'
     });
     
     if (signInError) {

@@ -512,24 +512,24 @@ const Profile: React.FC = () => {
                       <span className={`font-medium ${
                         subscriptionInfo?.status === 'active' 
                           ? 'text-green-600 dark:text-green-400'
-                          : subscriptionInfo?.status === 'trialing'
+                          : subscriptionInfo?.status === 'trial'
                           ? 'text-blue-600 dark:text-blue-400'
                           : 'text-red-600 dark:text-red-400'
                       }`}>
                         {subscriptionInfo?.status === 'active' ? 'Active' :
-                         subscriptionInfo?.status === 'trialing' ? 'Trial' :
-                         subscriptionInfo?.status === 'past_due' ? 'Past Due' :
-                         subscriptionInfo?.status === 'canceled' ? 'Canceled' : 'Inactive'}
+                         subscriptionInfo?.status === 'trial' ? 'Trial' :
+                         subscriptionInfo?.status === 'cancelled' ? 'Cancelled' :
+                         subscriptionInfo?.status === 'expired' ? 'Expired' : 'Inactive'}
                       </span>
                     </div>
                     
-                    {subscriptionInfo?.subscription_end_date && (
+                    {subscriptionInfo?.endDate && (
                       <div className="flex items-center justify-between text-sm mt-2">
                         <span className="text-gray-600 dark:text-gray-400">
-                          {subscriptionInfo?.status === 'trialing' ? 'Trial ends' : 'Next billing'}
+                          {subscriptionInfo?.status === 'trial' ? 'Trial ends' : 'Next billing'}
                         </span>
                         <span className="text-gray-900 dark:text-white">
-                          {new Date(subscriptionInfo.subscription_end_date).toLocaleDateString()}
+                          {new Date(subscriptionInfo.endDate!).toLocaleDateString()}
                         </span>
                       </div>
                     )}

@@ -11,7 +11,7 @@ export const Landing = () => {
 
   // Initialize page without clearing authentication storage
   useEffect(() => {
-    document.title = 'TradeWise - Trading Platform';
+    document.title = 'TradeTrackr - Trading Platform';
     
     const initializeCleanState = async () => {
       try {
@@ -36,7 +36,7 @@ export const Landing = () => {
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-4">
             <TrendingUp className="w-4 h-4 text-blue-500" />
-            <span className="text-lg font-bold">TradeWise</span>
+            <span className="text-lg font-bold">TradeTrackr</span>
           </div>
           
           {/* Desktop Navigation */}
@@ -206,7 +206,7 @@ export const Landing = () => {
           <div className="max-w-4xl mx-auto">
             <h1 className="text-5xl font-bold mb-6 leading-tight">
               Master Your Trading Journey with
-              <span className="text-blue-400"> TradeWise</span>
+              <span className="text-blue-400"> TradeTrackr</span>
             </h1>
             <p className="text-xl text-gray-300 mb-8 max-w-2xl mx-auto">
               Track your trades, analyze performance, and improve your trading strategy with our comprehensive trading journal platform.
@@ -279,9 +279,9 @@ export const Landing = () => {
             <h2 className="text-3xl font-bold mb-4">
               Ready to transform your trading?
             </h2>
-            <p className="text-gray-400 mb-8">
-              Join thousands of traders who are already using TradeWise to improve their performance.
-            </p>
+            <p className="text-gray-300 text-lg mb-8">
+          Join thousands of traders who are already using TradeTrackr to improve their performance.
+        </p>
             <Link
               to="/register"
               className="bg-[#1273d4] hover:bg-blue-600 text-white font-bold py-4 px-8 rounded-lg transition-colors inline-flex items-center gap-2"
@@ -299,7 +299,7 @@ export const Landing = () => {
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-4">
               <TrendingUp className="w-5 h-5 text-blue-500" />
-              <span className="font-bold">TradeWise</span>
+              <span className="font-bold">TradeTrackr</span>
             </div>
             <div className="flex items-center gap-8">
               <Link to="/features" className="text-sm text-gray-400 hover:text-white transition-colors">
@@ -314,7 +314,7 @@ export const Landing = () => {
             </div>
           </div>
           <div className="mt-8 pt-8 border-t border-gray-800 text-center text-sm text-gray-400">
-            © 2024 TradeWise. All rights reserved.
+            © 2024 TradeTrackr. All rights reserved.
           </div>
         </div>
       </footer>

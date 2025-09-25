@@ -29,7 +29,7 @@ export const Register: React.FC = () => {
   const navigate = useNavigate();
 
   useEffect(() => {
-    document.title = 'Sign Up - TradeWise';
+    document.title = 'Sign Up - TradeTrackr';
   }, []);
 
   const {
@@ -106,7 +106,7 @@ export const Register: React.FC = () => {
       <header className="flex items-center justify-between border-b border-gray-700 px-4 sm:px-6 md:px-10 py-3">
         <div className="flex items-center gap-2 sm:gap-4">
           <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 text-blue-400" />
-          <h1 className="text-white text-base sm:text-lg font-bold">TradeWise</h1>
+          <h1 className="text-white text-base sm:text-lg font-bold">TradeTrackr</h1>
         </div>
         <div className="flex items-center gap-4 sm:gap-8">
           <nav className="hidden sm:flex items-center gap-6 md:gap-9">
@@ -136,7 +136,7 @@ export const Register: React.FC = () => {
       <main className="flex-1 flex flex-col items-center justify-center spacing-responsive-md py-6 sm:py-10" role="main">
         <div className="w-full max-w-md sm:max-w-lg md:max-w-2xl">
           <h2 id="register-heading" className="text-white text-responsive-2xl font-bold text-center mb-3">
-            Join TradeWise
+            Join TradeTrackr
           </h2>
           <p className="text-white text-center mb-6 sm:mb-8 text-responsive-sm px-2">
             Create your account and start tracking your trades, analyzing performance, and improving your trading strategy.

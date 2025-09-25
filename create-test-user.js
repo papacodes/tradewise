@@ -1,8 +1,18 @@
 // Script to create a test user for debugging authentication flow
 import { createClient } from '@supabase/supabase-js';
 
-const supabaseUrl = 'https://tfwoxmtooyzvldznoveu.supabase.co';
-const supabaseServiceKey = 'eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6InRmd294bXRvb3l6dmxkem5vdmV1Iiwicm9sZSI6InNlcnZpY2Vfcm9sZSIsImlhdCI6MTc1ODY0ODQ5MSwiZXhwIjoyMDc0MjI0NDkxfQ.eBJpZY7Ajus6gQo3jdP5odbBl58D22O1xkLPuiVaG2w';
+// Load environment variables
+import dotenv from 'dotenv';
+dotenv.config();
+
+const supabaseUrl = process.env.VITE_SUPABASE_URL;
+const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY;
+
+if (!supabaseUrl || !supabaseServiceKey) {
+  console.error('Missing required environment variables: VITE_SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY');
+  console.error('Please check your .env file');
+  process.exit(1);
+}
 
 const supabase = createClient(supabaseUrl, supabaseServiceKey, {
   auth: {
@@ -17,7 +27,7 @@ async function createTestUser() {
     
     const { data, error } = await supabase.auth.admin.createUser({
       email: 'test@example.com',
-      password: 'testpass123',
+      password: process.env.TEST_USER_PASSWORD || 'testpass123',
       email_confirm: true,
       user_metadata: {
         first_name: 'Test',
@@ -32,7 +42,7 @@ async function createTestUser() {
     
     console.log('Test user created successfully!');
     console.log('Email: test@example.com');
-    console.log('Password: testpass123');
+    console.log('Password:', process.env.TEST_USER_PASSWORD || 'testpass123');
     console.log('User ID:', data.user.id);
     
   } catch (error) {

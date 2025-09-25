@@ -31,7 +31,7 @@ export const ForgotPassword: React.FC = React.memo(() => {
   });
 
   useEffect(() => {
-    document.title = 'Forgot Password - TradeWise';
+    document.title = 'Forgot Password - TradeTrackr';
   }, []);
 
   const onSubmit = useCallback(async (data: ForgotPasswordFormData) => {
@@ -79,7 +79,7 @@ export const ForgotPassword: React.FC = React.memo(() => {
       <header className="flex items-center justify-between border-b border-gray-700 px-10 py-3">
         <div className="flex items-center gap-4">
           <TrendingUp className="w-8 h-8 text-blue-400" />
-          <h1 className="text-white text-lg font-bold">TradeWise</h1>
+          <h1 className="text-white text-lg font-bold">TradeTrackr</h1>
         </div>
         <div className="flex items-center gap-8">
           <nav className="flex items-center gap-9">
