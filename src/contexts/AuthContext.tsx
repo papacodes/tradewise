@@ -14,7 +14,7 @@ interface AuthContextType {
   resetPassword: (email: string) => Promise<{ error: AuthError | null }>;
 }
 
-export const AuthContext = createContext<AuthContextType | undefined>(undefined);
+const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 const AuthProviderComponent: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const [user, setUser] = useState<User | null>(null);
@@ -128,38 +128,20 @@ const AuthProviderComponent: React.FC<{ children: React.ReactNode }> = ({ childr
   };
 
   const signIn = async (email: string, password: string) => {
+    console.log('🔐 AuthContext: Attempting sign in...');
     const { data, error } = await supabase.auth.signInWithPassword({
       email,
       password,
     });
 
     if (error) {
+      console.error('❌ AuthContext: Sign in error:', error);
       return { error };
     }
 
-    // Wait for the auth state change event to fire
-    return new Promise<{ error: AuthError | null }>((resolve) => {
-      const timeout = setTimeout(() => {
-        resolve({ error: new Error('Authentication timeout') as AuthError });
-      }, 10000); // 10 second timeout
-
-      const { data: { subscription } } = supabase.auth.onAuthStateChange(
-        (event, session) => {
-          if (event === 'SIGNED_IN' && session?.user) {
-            clearTimeout(timeout);
-            subscription.unsubscribe();
-            resolve({ error: null });
-          }
-        }
-      );
-
-      // If we already have the session from the signIn response, resolve immediately
-      if (data.session?.user) {
-        clearTimeout(timeout);
-        subscription.unsubscribe();
-        resolve({ error: null });
-      }
-    });
+    console.log('✅ AuthContext: Sign in successful, session:', data.session ? 'exists' : 'none');
+    // The global auth state listener will handle updating the user/session state
+    return { error: null };
   };
 
   const signOut = async () => {
@@ -211,3 +193,4 @@ const AuthProviderComponent: React.FC<{ children: React.ReactNode }> = ({ childr
 };
 
 export const AuthProvider = AuthProviderComponent;
+export { AuthContext };

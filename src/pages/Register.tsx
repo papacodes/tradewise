@@ -103,13 +103,13 @@ export const Register: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-900 flex flex-col">
       {/* Header */}
-      <header className="flex items-center justify-between border-b border-gray-700 px-10 py-3">
-        <div className="flex items-center gap-4">
-          <TrendingUp className="w-8 h-8 text-blue-400" />
-          <h1 className="text-white text-lg font-bold">TradeWise</h1>
+      <header className="flex items-center justify-between border-b border-gray-700 px-4 sm:px-6 md:px-10 py-3">
+        <div className="flex items-center gap-2 sm:gap-4">
+          <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 text-blue-400" />
+          <h1 className="text-white text-base sm:text-lg font-bold">TradeWise</h1>
         </div>
-        <div className="flex items-center gap-8">
-          <nav className="flex items-center gap-9">
+        <div className="flex items-center gap-4 sm:gap-8">
+          <nav className="hidden sm:flex items-center gap-6 md:gap-9">
             <Link to="/" className="text-white text-sm font-medium hover:text-blue-400 transition-colors">
               Home
             </Link>
@@ -125,7 +125,7 @@ export const Register: React.FC = () => {
           </nav>
           <Link
             to="/login"
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors btn-touch flex items-center"
           >
             Log In
           </Link>
@@ -133,18 +133,18 @@ export const Register: React.FC = () => {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col items-center justify-center px-40 py-10" role="main">
-        <div className="w-full max-w-2xl">
-          <h2 id="register-heading" className="text-white text-3xl font-bold text-center mb-3">
+      <main className="flex-1 flex flex-col items-center justify-center spacing-responsive-md py-6 sm:py-10" role="main">
+        <div className="w-full max-w-md sm:max-w-lg md:max-w-2xl">
+          <h2 id="register-heading" className="text-white text-responsive-2xl font-bold text-center mb-3">
             Join TradeWise
           </h2>
-          <p className="text-white text-center mb-8">
+          <p className="text-white text-center mb-6 sm:mb-8 text-responsive-sm px-2">
             Create your account and start tracking your trades, analyzing performance, and improving your trading strategy.
           </p>
 
           <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" role="form" aria-labelledby="register-heading">
             {/* Name Fields */}
-            <div className="grid grid-cols-2 gap-4">
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-responsive-sm">
               <div>
                 <label htmlFor="firstName" className="sr-only">First Name</label>
                 <div className="bg-gray-800 rounded-lg p-4">
@@ -153,7 +153,7 @@ export const Register: React.FC = () => {
                     id="firstName"
                     type="text"
                     placeholder="First Name"
-                    className="w-full bg-transparent text-gray-300 placeholder-gray-500 outline-none text-base focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+                    className="w-full bg-transparent text-gray-300 placeholder-gray-500 outline-none input-touch text-responsive-base focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800"
                     disabled={isLoading}
                     autoComplete="given-name"
                     aria-invalid={errors.firstName ? 'true' : 'false'}
@@ -172,7 +172,7 @@ export const Register: React.FC = () => {
                     id="lastName"
                     type="text"
                     placeholder="Last Name"
-                    className="w-full bg-transparent text-gray-300 placeholder-gray-500 outline-none text-base focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+                    className="w-full bg-transparent text-gray-300 placeholder-gray-500 outline-none input-touch text-responsive-base focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800"
                     disabled={isLoading}
                     autoComplete="family-name"
                     aria-invalid={errors.lastName ? 'true' : 'false'}
@@ -194,7 +194,7 @@ export const Register: React.FC = () => {
                   id="email"
                   type="email"
                   placeholder="Email"
-                  className="w-full bg-transparent text-gray-300 placeholder-gray-500 outline-none text-base focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+                  className="w-full bg-transparent text-gray-300 placeholder-gray-500 outline-none input-touch text-responsive-base focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800"
                   disabled={isLoading}
                   autoComplete="email"
                   aria-invalid={errors.email ? 'true' : 'false'}
@@ -215,7 +215,7 @@ export const Register: React.FC = () => {
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Password"
-                  className="flex-1 bg-transparent text-gray-300 placeholder-gray-500 outline-none text-base focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+                  className="flex-1 bg-transparent text-gray-300 placeholder-gray-500 outline-none input-touch text-responsive-base focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800"
                   disabled={isLoading}
                   autoComplete="new-password"
                   aria-invalid={errors.password ? 'true' : 'false'}
@@ -224,7 +224,7 @@ export const Register: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="text-gray-500 hover:text-gray-300 ml-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+                  className="text-gray-500 hover:text-gray-300 ml-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 btn-touch"
                   disabled={isLoading}
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                 >
@@ -245,7 +245,7 @@ export const Register: React.FC = () => {
                   id="confirmPassword"
                   type={showConfirmPassword ? 'text' : 'password'}
                   placeholder="Confirm Password"
-                  className="flex-1 bg-transparent text-gray-300 placeholder-gray-500 outline-none text-base focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+                  className="flex-1 bg-transparent text-gray-300 placeholder-gray-500 outline-none input-touch text-responsive-base focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800"
                   disabled={isLoading}
                   autoComplete="new-password"
                   aria-invalid={errors.confirmPassword ? 'true' : 'false'}
@@ -254,7 +254,7 @@ export const Register: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                  className="text-gray-500 hover:text-gray-300 ml-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800"
+                  className="text-gray-500 hover:text-gray-300 ml-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 btn-touch"
                   disabled={isLoading}
                   aria-label={showConfirmPassword ? 'Hide confirm password' : 'Show confirm password'}
                 >
@@ -274,19 +274,19 @@ export const Register: React.FC = () => {
             )}
 
             {/* Submit Button */}
-            <div className="flex justify-center">
+            <div className="pt-4">
               <button
                 type="submit"
                 disabled={isLoading}
-                className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:cursor-not-allowed text-white px-56 py-3 rounded-lg text-base font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+                className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:cursor-not-allowed text-white py-3 sm:py-4 rounded-lg text-base sm:text-lg font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900 min-h-[52px] touch-manipulation"
                 aria-describedby={errors.root ? 'register-error' : undefined}
               >
-                {isLoading ? 'Creating Account...' : 'Sign Up'}
+                {isLoading ? 'Creating Account...' : 'Create Account'}
               </button>
             </div>
           </form>
 
-          <p className="text-white text-center mt-6">
+          <p className="text-gray-300 text-center mt-8 text-sm sm:text-base">
             Already have an account?{' '}
             <Link to="/login" className="text-blue-400 hover:text-blue-300 transition-colors">
               Log in

@@ -1,7 +1,9 @@
 import React, { useState, useCallback, memo } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
-import { User, TrendingUp, LogOut, X, Menu } from 'lucide-react';
+import { useSubscription } from '../hooks/useSubscriptionHooks';
+import { User, TrendingUp, LogOut, X, Menu, Crown } from 'lucide-react';
+import TierBadge from './TierBadge';
 
 interface LayoutProps {
   children: React.ReactNode;
@@ -105,6 +107,7 @@ export const Layout: React.FC<LayoutProps> = memo(({ children }) => {
           </nav>
           
           <div className="flex items-center gap-4">
+            <TierDisplay />
             <div className="flex items-center gap-3">
               <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
                 <User size={16} className="text-white" />
@@ -122,6 +125,7 @@ export const Layout: React.FC<LayoutProps> = memo(({ children }) => {
 
         {/* Mobile Menu Button */}
         <div className="md:hidden flex items-center gap-3">
+          <TierDisplay mobile />
           <div className="w-8 h-8 bg-blue-500 rounded-full flex items-center justify-center">
             <User size={16} className="text-white" />
           </div>
@@ -209,7 +213,8 @@ export const Layout: React.FC<LayoutProps> = memo(({ children }) => {
                 Profile
               </Link>
               
-              <div className="pt-4 border-t border-gray-700">
+              <div className="pt-4 border-t border-gray-700 space-y-3">
+                <MobileTierUpgrade onClose={closeMobileMenu} />
                 <button
                   onClick={() => {
                     closeMobileMenu();
@@ -265,5 +270,49 @@ export const Layout: React.FC<LayoutProps> = memo(({ children }) => {
         </div>
       )}
     </div>
+  );
+});
+
+// Tier Display Component
+const TierDisplay: React.FC<{ mobile?: boolean }> = memo(({ mobile = false }) => {
+  const { subscriptionInfo, loading } = useSubscription();
+
+  if (loading || !subscriptionInfo) {
+    return null;
+  }
+
+  return (
+    <Link
+      to="/pricing"
+      className={`flex items-center gap-2 hover:opacity-80 transition-opacity ${
+        mobile ? 'order-first' : ''
+      }`}
+      title="View subscription plans"
+    >
+      <TierBadge tier={subscriptionInfo.tier} size="sm" />
+      {subscriptionInfo.tier === 'free' && (
+        <Crown className="w-4 h-4 text-yellow-400" />
+      )}
+    </Link>
+  );
+});
+
+// Mobile Tier Upgrade Component
+const MobileTierUpgrade: React.FC<{ onClose: () => void }> = memo(({ onClose }) => {
+  const { subscriptionInfo, loading } = useSubscription();
+
+  if (loading || !subscriptionInfo || subscriptionInfo.tier !== 'free') {
+    return null;
+  }
+
+  return (
+    <Link
+      to="/pricing"
+      onClick={onClose}
+      className="flex items-center gap-2 w-full px-3 py-2 text-base font-medium text-blue-300 hover:text-blue-200 bg-blue-900/30 hover:bg-blue-900/50 rounded-md transition-colors border border-blue-700/50"
+    >
+      <Crown size={16} />
+      Upgrade to Pro
+    </Link>
   );
 });

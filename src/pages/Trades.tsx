@@ -202,58 +202,58 @@ export const Trades: React.FC = React.memo(() => {
 
   return (
     <Layout>
-      <div className="p-6">
+      <div className="p-3 sm:p-6">
         {/* Header */}
-        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-6">
+        <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center mb-4 sm:mb-6">
           <div>
-            <h1 className="text-3xl font-bold text-white mb-2">Trade History</h1>
-            <p className="text-gray-400">View and manage your trading history</p>
+            <h1 className="text-2xl sm:text-3xl font-bold text-white mb-2">Trade History</h1>
+            <p className="text-sm sm:text-base text-gray-400">View and manage your trading history</p>
           </div>
           <Link
             to="/trade-log"
-            className="mt-4 sm:mt-0 inline-flex items-center px-4 py-2 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors"
+            className="mt-4 sm:mt-0 inline-flex items-center px-3 sm:px-4 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 transition-colors btn-touch text-responsive-base"
           >
-            <Plus className="h-5 w-5 mr-2" />
+            <Plus className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
             Add New Trade
           </Link>
         </div>
 
         {/* Search and Filters */}
-        <div className="bg-gray-800 rounded-lg p-4 mb-6">
-          <div className="flex flex-col sm:flex-row gap-4">
+        <div className="bg-gray-800 rounded-lg p-3 sm:p-4 mb-4 sm:mb-6">
+          <div className="flex flex-col sm:flex-row gap-3 sm:gap-4">
             {/* Search */}
             <div className="flex-1 relative">
-              <Search className="absolute left-3 top-3 h-5 w-5 text-gray-400" />
+              <Search className="absolute left-3 top-3 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
               <input
                 type="text"
                 placeholder="Search by symbol or trade name..."
                 value={searchTerm}
                 onChange={(e) => setSearchTerm(e.target.value)}
-                className="w-full pl-10 pr-4 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full pl-9 sm:pl-10 pr-4 bg-gray-700 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-touch text-responsive-base"
               />
             </div>
 
             {/* Filter Toggle */}
             <button
               onClick={() => setShowFilters(!showFilters)}
-              className="inline-flex items-center px-4 py-2 bg-gray-700 text-white rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500"
+              className="inline-flex items-center justify-center px-4 bg-gray-700 text-white rounded-lg hover:bg-gray-600 focus:outline-none focus:ring-2 focus:ring-blue-500 btn-touch text-responsive-base"
             >
-              <Filter className="h-5 w-5 mr-2" />
+              <Filter className="h-4 w-4 sm:h-5 sm:w-5 mr-2" />
               Filters
             </button>
           </div>
 
           {/* Filter Options */}
           {showFilters && (
-            <div className="mt-4 pt-4 border-t border-gray-700">
-              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-4">
+            <div className="mt-3 sm:mt-4 pt-3 sm:pt-4 border-t border-gray-700">
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4">
                 {/* Profitability Filter */}
                 <div>
-                  <label className="block text-white font-medium mb-2">Outcome</label>
+                  <label className="block text-white font-medium mb-2 text-sm sm:text-base">Outcome</label>
                   <select
                     value={filterProfitable}
                     onChange={(e) => setFilterProfitable(e.target.value as 'all' | 'profitable' | 'loss')}
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 input-touch text-responsive-base"
                   >
                     <option value="all">All Trades</option>
                     <option value="profitable">Profitable Only</option>
@@ -263,11 +263,11 @@ export const Trades: React.FC = React.memo(() => {
 
                 {/* Session Filter */}
                 <div>
-                  <label className="block text-white font-medium mb-2">Session</label>
+                  <label className="block text-white font-medium mb-2 text-sm sm:text-base">Session</label>
                   <select
                     value={filterSession}
                     onChange={(e) => setFilterSession(e.target.value)}
-                    className="w-full px-3 py-2 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="w-full px-3 bg-gray-700 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 input-touch text-responsive-base"
                   >
                     <option value="all">All Sessions</option>
                     <option value="london">London</option>
@@ -323,35 +323,35 @@ export const Trades: React.FC = React.memo(() => {
               <table className="w-full">
                 <thead className="bg-gray-700">
                   <tr>
-                    <th className="px-6 py-3 text-left">
+                    <th className="px-3 sm:px-6 py-3 text-left">
                       <button
                         onClick={() => handleSort('trade_date')}
-                        className="flex items-center text-white font-medium hover:text-blue-400 focus:outline-none"
+                        className="flex items-center text-white font-medium hover:text-blue-400 focus:outline-none text-xs sm:text-base"
                       >
                         Date
-                        <ArrowUpDown className="h-4 w-4 ml-1" />
+                        <ArrowUpDown className="h-3 w-3 sm:h-4 sm:w-4 ml-1" />
                       </button>
                     </th>
-                    <th className="px-6 py-3 text-left">
+                    <th className="px-3 sm:px-6 py-3 text-left">
                       <button
                         onClick={() => handleSort('symbol')}
-                        className="flex items-center text-white font-medium hover:text-blue-400 focus:outline-none"
+                        className="flex items-center text-white font-medium hover:text-blue-400 focus:outline-none text-xs sm:text-base"
                       >
                         Symbol
-                        <ArrowUpDown className="h-4 w-4 ml-1" />
+                        <ArrowUpDown className="h-3 w-3 sm:h-4 sm:w-4 ml-1" />
                       </button>
                     </th>
-                    <th className="px-6 py-3 text-left text-white font-medium">Type</th>
-                    <th className="px-6 py-3 text-left">
+                    <th className="px-3 sm:px-6 py-3 text-left text-white font-medium text-xs sm:text-base">Type</th>
+                    <th className="px-3 sm:px-6 py-3 text-left">
                       <button
                         onClick={() => handleSort('pnl_amount')}
-                        className="flex items-center text-white font-medium hover:text-blue-400 focus:outline-none"
+                        className="flex items-center text-white font-medium hover:text-blue-400 focus:outline-none text-xs sm:text-base"
                       >
                         P&L
-                        <ArrowUpDown className="h-4 w-4 ml-1" />
+                        <ArrowUpDown className="h-3 w-3 sm:h-4 sm:w-4 ml-1" />
                       </button>
                     </th>
-                    <th className="px-6 py-3 text-left">
+                    <th className="hidden sm:table-cell px-6 py-3 text-left">
                       <button
                         onClick={() => handleSort('entry_price')}
                         className="flex items-center text-white font-medium hover:text-blue-400 focus:outline-none"
@@ -360,83 +360,83 @@ export const Trades: React.FC = React.memo(() => {
                         <ArrowUpDown className="h-4 w-4 ml-1" />
                       </button>
                     </th>
-                    <th className="px-6 py-3 text-left text-white font-medium">Exit</th>
-                    <th className="px-6 py-3 text-left text-white font-medium">Session</th>
-                    <th className="px-6 py-3 text-left text-white font-medium">Size</th>
-                    <th className="px-6 py-3 text-left text-white font-medium">Account</th>
-                    <th className="px-6 py-3 text-left text-white font-medium">Actions</th>
+                    <th className="hidden sm:table-cell px-6 py-3 text-left text-white font-medium">Exit</th>
+                    <th className="hidden sm:table-cell px-6 py-3 text-left text-white font-medium">Session</th>
+                    <th className="hidden sm:table-cell px-6 py-3 text-left text-white font-medium">Size</th>
+                    <th className="hidden sm:table-cell px-6 py-3 text-left text-white font-medium">Account</th>
+                    <th className="px-3 sm:px-6 py-3 text-left text-white font-medium text-xs sm:text-base">Actions</th>
                   </tr>
                 </thead>
                 <tbody className="divide-y divide-gray-700">
                   {filteredAndSortedTrades.map((trade) => (
                     <tr key={trade.id} className="hover:bg-gray-700 transition-colors">
-                      <td className="px-6 py-4 text-white">
+                      <td className="px-3 sm:px-6 py-3 sm:py-4 text-white">
                         <div>
-                          <div className="font-medium">{formatDate(trade.trade_date)}</div>
-                          <div className="text-sm text-gray-400">{trade.trade_name}</div>
+                          <div className="font-medium text-xs sm:text-base">{formatDate(trade.trade_date)}</div>
+                          <div className="text-xs sm:text-sm text-gray-400 truncate max-w-[100px] sm:max-w-none">{trade.trade_name}</div>
                         </div>
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="font-medium text-white">{trade.symbol}</div>
-                        <div className="text-sm text-gray-400 capitalize">{trade.market_bias}</div>
+                      <td className="px-3 sm:px-6 py-3 sm:py-4">
+                        <div className="font-medium text-white text-xs sm:text-base">{trade.symbol}</div>
+                        <div className="text-xs sm:text-sm text-gray-400 capitalize">{trade.market_bias}</div>
                       </td>
-                      <td className="px-6 py-4">
-                        <div className={`inline-flex items-center px-2 py-1 rounded-full text-xs font-medium ${
+                      <td className="px-3 sm:px-6 py-3 sm:py-4">
+                        <div className={`inline-flex items-center px-1 sm:px-2 py-1 rounded-full text-xs font-medium ${
                           trade.is_profitable 
                             ? 'bg-green-100 text-green-800' 
                             : 'bg-red-100 text-red-800'
                         }`}>
                           {trade.is_profitable ? (
-                            <><TrendingUp className="h-3 w-3 mr-1" />Profit</>
+                            <><TrendingUp className="h-2 w-2 sm:h-3 sm:w-3 mr-1" />Profit</>
                           ) : (
-                            <><TrendingDown className="h-3 w-3 mr-1" />Loss</>
+                            <><TrendingDown className="h-2 w-2 sm:h-3 sm:w-3 mr-1" />Loss</>
                           )}
                         </div>
                       </td>
-                      <td className="px-6 py-4">
-                        <div className={`font-medium ${
+                      <td className="px-3 sm:px-6 py-3 sm:py-4">
+                        <div className={`font-medium text-xs sm:text-base ${
                           trade.is_profitable ? 'text-green-400' : 'text-red-400'
                         }`}>
                           {formatCurrency(trade.pnl_amount || 0)}
                         </div>
                       </td>
-                      <td className="px-6 py-4 text-white font-mono">
+                      <td className="hidden sm:table-cell px-6 py-4 text-white font-mono">
                         {trade.entry_price.toFixed(5)}
                       </td>
-                      <td className="px-6 py-4 text-white font-mono">
+                      <td className="hidden sm:table-cell px-6 py-4 text-white font-mono">
                         {getExitPrice(trade).toFixed(5)}
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="hidden sm:table-cell px-6 py-4">
                         <span className="text-gray-300 capitalize">{trade.trading_session}</span>
                       </td>
-                      <td className="px-6 py-4 text-white font-mono">
+                      <td className="hidden sm:table-cell px-6 py-4 text-white font-mono">
                         {trade.position_size?.toFixed(2) || '1.00'}
                       </td>
-                      <td className="px-6 py-4">
+                      <td className="hidden sm:table-cell px-6 py-4">
                         <div className="text-white font-medium">{getAccountName(trade.account_id)}</div>
                       </td>
-                      <td className="px-6 py-4">
-                        <div className="flex items-center space-x-2">
+                      <td className="px-3 sm:px-6 py-3 sm:py-4">
+                        <div className="flex items-center space-x-1 sm:space-x-2">
                           <button
                             onClick={() => handleViewTrade(trade)}
-                            className="p-2 text-blue-400 hover:text-blue-300 hover:bg-gray-600 rounded-lg transition-colors"
+                            className="text-blue-400 hover:text-blue-300 hover:bg-gray-600 rounded-lg transition-colors touch-target"
                             title="View Details"
                           >
-                            <Eye className="h-4 w-4" />
+                            <Eye className="h-3 w-3 sm:h-4 sm:w-4" />
                           </button>
                           <button
                             onClick={() => handleEditTrade(trade)}
-                            className="p-2 text-yellow-400 hover:text-yellow-300 hover:bg-gray-600 rounded-lg transition-colors"
+                            className="text-yellow-400 hover:text-yellow-300 hover:bg-gray-600 rounded-lg transition-colors touch-target"
                             title="Edit Trade"
                           >
-                            <Edit className="h-4 w-4" />
+                            <Edit className="h-3 w-3 sm:h-4 sm:w-4" />
                           </button>
                           <button
                             onClick={() => handleDeleteTrade(trade)}
-                            className="p-2 text-red-400 hover:text-red-300 hover:bg-gray-600 rounded-lg transition-colors"
+                            className="text-red-400 hover:text-red-300 hover:bg-gray-600 rounded-lg transition-colors touch-target"
                             title="Delete Trade"
                           >
-                            <Trash2 className="h-4 w-4" />
+                            <Trash2 className="h-3 w-3 sm:h-4 sm:w-4" />
                           </button>
                         </div>
                       </td>
@@ -450,20 +450,20 @@ export const Trades: React.FC = React.memo(() => {
 
         {/* Summary Stats */}
         {filteredAndSortedTrades.length > 0 && (
-          <div className="mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
-            <div className="bg-gray-800 rounded-lg p-4">
-              <h3 className="text-white font-medium mb-2">Total Trades</h3>
-              <p className="text-2xl font-bold text-white">{filteredAndSortedTrades.length}</p>
+          <div className="mt-4 sm:mt-6 grid grid-cols-1 sm:grid-cols-3 gap-4">
+            <div className="bg-gray-800 rounded-lg p-3 sm:p-4">
+              <h3 className="text-white font-medium mb-2 text-sm sm:text-base">Total Trades</h3>
+              <p className="text-xl sm:text-2xl font-bold text-white">{filteredAndSortedTrades.length}</p>
             </div>
-            <div className="bg-gray-800 rounded-lg p-4">
-              <h3 className="text-white font-medium mb-2">Win Rate</h3>
-              <p className="text-2xl font-bold text-white">
+            <div className="bg-gray-800 rounded-lg p-3 sm:p-4">
+              <h3 className="text-white font-medium mb-2 text-sm sm:text-base">Win Rate</h3>
+              <p className="text-xl sm:text-2xl font-bold text-white">
                 {((filteredAndSortedTrades.filter(t => t.is_profitable).length / filteredAndSortedTrades.length) * 100).toFixed(1)}%
               </p>
             </div>
-            <div className="bg-gray-800 rounded-lg p-4">
-              <h3 className="text-white font-medium mb-2">Total P&L</h3>
-              <p className={`text-2xl font-bold ${
+            <div className="bg-gray-800 rounded-lg p-3 sm:p-4">
+              <h3 className="text-white font-medium mb-2 text-sm sm:text-base">Total P&L</h3>
+              <p className={`text-xl sm:text-2xl font-bold ${
                 filteredAndSortedTrades.reduce((sum, t) => sum + (t.pnl_amount || 0), 0) >= 0 
                   ? 'text-green-400' 
                   : 'text-red-400'
@@ -476,35 +476,35 @@ export const Trades: React.FC = React.memo(() => {
 
         {/* View Trade Modal */}
         {showViewModal && selectedTrade && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-gray-800 rounded-lg max-w-2xl w-full max-h-[90vh] overflow-y-auto">
-              <div className="p-6">
-                <div className="flex justify-between items-center mb-6">
-                  <h2 className="text-xl font-bold text-white">Trade Details</h2>
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 sm:p-4 z-50">
+            <div className="bg-gray-800 rounded-lg max-w-2xl w-full max-h-[95vh] sm:max-h-[90vh] overflow-y-auto">
+              <div className="p-4 sm:p-6">
+                <div className="flex justify-between items-center mb-4 sm:mb-6">
+                  <h2 className="text-lg sm:text-xl font-bold text-white">Trade Details</h2>
                   <button
                     onClick={() => setShowViewModal(false)}
-                    className="text-gray-400 hover:text-white"
+                    className="text-gray-400 hover:text-white hover:bg-gray-700 rounded-lg transition-colors touch-target"
                   >
                     ×
                   </button>
                 </div>
                 
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
                   <div>
-                    <label className="block text-gray-400 text-sm mb-1">Trade Name</label>
-                    <p className="text-white font-medium">{selectedTrade.trade_name}</p>
+                    <label className="block text-gray-400 text-xs sm:text-sm mb-1">Trade Name</label>
+                    <p className="text-white font-medium text-sm sm:text-base">{selectedTrade.trade_name}</p>
                   </div>
                   <div>
-                    <label className="block text-gray-400 text-sm mb-1">Account</label>
-                    <p className="text-white font-medium">{getAccountName(selectedTrade.account_id)}</p>
+                    <label className="block text-gray-400 text-xs sm:text-sm mb-1">Account</label>
+                    <p className="text-white font-medium text-sm sm:text-base">{getAccountName(selectedTrade.account_id)}</p>
                   </div>
                   <div>
-                    <label className="block text-gray-400 text-sm mb-1">Symbol</label>
-                    <p className="text-white font-medium">{selectedTrade.symbol}</p>
+                    <label className="block text-gray-400 text-xs sm:text-sm mb-1">Symbol</label>
+                    <p className="text-white font-medium text-sm sm:text-base">{selectedTrade.symbol}</p>
                   </div>
                   <div>
-                    <label className="block text-gray-400 text-sm mb-1">Date</label>
-                    <p className="text-white font-medium">{formatDate(selectedTrade.trade_date)}</p>
+                    <label className="block text-gray-400 text-xs sm:text-sm mb-1">Date</label>
+                    <p className="text-white font-medium text-sm sm:text-base">{formatDate(selectedTrade.trade_date)}</p>
                   </div>
                   <div>
                     <label className="block text-gray-400 text-sm mb-1">Entry Price</label>
@@ -584,10 +584,10 @@ export const Trades: React.FC = React.memo(() => {
                   </div>
                 )}
                 
-                <div className="mt-6 flex justify-end space-x-3">
+                <div className="mt-4 sm:mt-6 flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3">
                   <button
                     onClick={() => setShowViewModal(false)}
-                    className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500"
+                    className="px-4 py-3 sm:py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 text-sm sm:text-base min-h-[44px]"
                   >
                     Close
                   </button>
@@ -596,7 +596,7 @@ export const Trades: React.FC = React.memo(() => {
                       setShowViewModal(false);
                       handleEditTrade(selectedTrade);
                     }}
-                    className="px-4 py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                    className="px-4 py-3 sm:py-2 bg-blue-600 text-white rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 text-sm sm:text-base min-h-[44px]"
                   >
                     Edit Trade
                   </button>
@@ -608,12 +608,12 @@ export const Trades: React.FC = React.memo(() => {
 
         {/* Delete Confirmation Modal */}
         {showDeleteModal && selectedTrade && (
-          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-4 z-50">
-            <div className="bg-gray-800 rounded-lg max-w-md w-full">
-              <div className="p-6">
+          <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center p-2 sm:p-4 z-50">
+            <div className="bg-gray-800 rounded-lg max-w-md w-full mx-2 sm:mx-0">
+              <div className="p-4 sm:p-6">
                 <div className="flex items-center mb-4">
                   <div className="flex-shrink-0">
-                    <Trash2 className="h-6 w-6 text-red-400" />
+                    <Trash2 className="h-5 w-5 sm:h-6 sm:w-6 text-red-400" />
                   </div>
                   <div className="ml-3">
                     <h3 className="text-lg font-medium text-white">Delete Trade</h3>
@@ -621,24 +621,24 @@ export const Trades: React.FC = React.memo(() => {
                 </div>
                 
                 <div className="mb-4">
-                  <p className="text-gray-300">
+                  <p className="text-gray-300 text-sm sm:text-base">
                     Are you sure you want to delete the trade "{selectedTrade.trade_name}" for {selectedTrade.symbol}? 
                     This action cannot be undone.
                   </p>
                 </div>
                 
-                <div className="flex justify-end space-x-3">
+                <div className="flex flex-col sm:flex-row justify-end space-y-2 sm:space-y-0 sm:space-x-3">
                   <button
                     onClick={() => setShowDeleteModal(false)}
                     disabled={deleting}
-                    className="px-4 py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50"
+                    className="px-4 py-3 sm:py-2 bg-gray-600 text-white rounded-lg hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-gray-500 disabled:opacity-50 text-sm sm:text-base min-h-[44px]"
                   >
                     Cancel
                   </button>
                   <button
                     onClick={confirmDeleteTrade}
                     disabled={deleting}
-                    className="px-4 py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50 flex items-center"
+                    className="px-4 py-3 sm:py-2 bg-red-600 text-white rounded-lg hover:bg-red-700 focus:outline-none focus:ring-2 focus:ring-red-500 disabled:opacity-50 flex items-center text-sm sm:text-base min-h-[44px]"
                   >
                     {deleting ? (
                       <>

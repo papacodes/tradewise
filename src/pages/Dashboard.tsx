@@ -251,62 +251,70 @@ export const Dashboard: React.FC = React.memo(() => {
 
   return (
     <Layout>
-      <div className="flex flex-col p-4 md:p-8 max-w-6xl mx-auto">
+      <div className="flex flex-col p-3 sm:p-4 md:p-8 max-w-6xl mx-auto">
         {/* Header */}
-        <div className="mb-8">
-          <h1 className="text-white text-3xl font-bold mb-2">Dashboard</h1>
-          <p className="text-gray-400 text-sm">
+        <div className="mb-6 sm:mb-8">
+          <h1 className="text-white text-2xl sm:text-3xl font-bold mb-2">Dashboard</h1>
+          <p className="text-gray-400 text-sm sm:text-base">
             Track your trading performance and insights
           </p>
         </div>
 
         {/* MFA and Profile Completion Cards */}
-        <div className="space-y-4 mb-8">
+        <div className="space-y-4 mb-6 sm:mb-8">
           <MFASetupCard />
           <ProfileCompletionCard />
         </div>
 
         {/* Stats Cards */}
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4 mb-8">
-          <div className="bg-gray-800 rounded-lg p-6">
-            <h3 className="text-white text-base font-medium mb-2">Total Trades</h3>
-            <p className="text-white text-2xl font-bold mb-1">{stats.totalTrades}</p>
-            {formatPercentage(stats.totalTradesChange)}
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3 sm:gap-4 mb-6 sm:mb-8">
+          <div className="bg-gray-800 rounded-lg p-4 sm:p-6">
+            <h3 className="text-white text-sm sm:text-base font-medium mb-2">Total Trades</h3>
+            <p className="text-white text-xl sm:text-2xl font-bold mb-1">{stats.totalTrades}</p>
+            <div className="text-sm sm:text-base">
+              {formatPercentage(stats.totalTradesChange)}
+            </div>
           </div>
           
-          <div className="bg-gray-800 rounded-lg p-6">
-            <h3 className="text-white text-base font-medium mb-2">Current P/L</h3>
-            <p className="text-white text-2xl font-bold mb-1">
+          <div className="bg-gray-800 rounded-lg p-4 sm:p-6">
+            <h3 className="text-white text-sm sm:text-base font-medium mb-2">Current P/L</h3>
+            <p className="text-white text-xl sm:text-2xl font-bold mb-1 break-all">
               {formatCurrency(stats.currentPL)}
             </p>
-            {formatPercentage(stats.currentPLChange, stats.currentPL >= 0)}
+            <div className="text-sm sm:text-base">
+              {formatPercentage(stats.currentPLChange, stats.currentPL >= 0)}
+            </div>
           </div>
           
-          <div className="bg-gray-800 rounded-lg p-6">
-            <h3 className="text-white text-base font-medium mb-2">Cumulative P/L</h3>
-            <p className="text-white text-2xl font-bold mb-1">
+          <div className="bg-gray-800 rounded-lg p-4 sm:p-6 sm:col-span-2 lg:col-span-1">
+            <h3 className="text-white text-sm sm:text-base font-medium mb-2">Cumulative P/L</h3>
+            <p className="text-white text-xl sm:text-2xl font-bold mb-1 break-all">
               {formatCurrency(stats.cumulativePL)}
             </p>
-            {formatPercentage(stats.cumulativePLChange)}
+            <div className="text-sm sm:text-base">
+              {formatPercentage(stats.cumulativePLChange)}
+            </div>
           </div>
         </div>
 
         {/* Charts */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
+        <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 sm:gap-6">
           {/* Profit/Loss Over Time */}
-          <div className="bg-gray-800 border border-gray-600 rounded-lg p-6">
+          <div className="bg-gray-800 border border-gray-600 rounded-lg p-4 sm:p-6">
             <div className="mb-4">
-              <h3 className="text-white text-base font-medium mb-1">Profit/Loss Over Time</h3>
-              <p className="text-white text-2xl font-bold mb-2">
+              <h3 className="text-white text-sm sm:text-base font-medium mb-1">Profit/Loss Over Time</h3>
+              <p className="text-white text-xl sm:text-2xl font-bold mb-2 break-all">
                 {formatCurrency(stats.cumulativePL)}
               </p>
-              <div className="flex items-center gap-1 text-sm">
+              <div className="flex items-center gap-1 text-xs sm:text-sm">
                 <span className="text-gray-400">Last 3 Months</span>
-                {formatPercentage(stats.cumulativePLChange)}
+                <div className="text-xs sm:text-sm">
+                  {formatPercentage(stats.cumulativePLChange)}
+                </div>
               </div>
             </div>
             
-            <div className="h-48">
+            <div className="h-40 sm:h-48">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart data={chartData}>
                   <CartesianGrid strokeDasharray="3 3" stroke="#374151" />
@@ -314,7 +322,7 @@ export const Dashboard: React.FC = React.memo(() => {
                     dataKey="month" 
                     axisLine={false}
                     tickLine={false}
-                    tick={{ fill: '#9CA3AF', fontSize: 12 }}
+                    tick={{ fill: '#9CA3AF', fontSize: 10 }}
                   />
                   <YAxis hide />
                   <Tooltip 
@@ -322,7 +330,8 @@ export const Dashboard: React.FC = React.memo(() => {
                       backgroundColor: '#1F2937',
                       border: '1px solid #374151',
                       borderRadius: '8px',
-                      color: '#fff'
+                      color: '#fff',
+                      fontSize: '12px'
                     }}
                     formatter={(value: number) => [formatCurrency(value), 'P&L']}
                   />
@@ -331,7 +340,7 @@ export const Dashboard: React.FC = React.memo(() => {
                     dataKey="pnl" 
                     stroke="#3B82F6" 
                     strokeWidth={2}
-                    dot={{ fill: '#3B82F6', strokeWidth: 2, r: 4 }}
+                    dot={{ fill: '#3B82F6', strokeWidth: 2, r: 3 }}
                   />
                 </LineChart>
               </ResponsiveContainer>
@@ -339,19 +348,21 @@ export const Dashboard: React.FC = React.memo(() => {
           </div>
 
           {/* Trade Outcomes */}
-          <div className="bg-gray-800 border border-gray-600 rounded-lg p-6">
+          <div className="bg-gray-800 border border-gray-600 rounded-lg p-4 sm:p-6">
             <div className="mb-4">
-              <h3 className="text-white text-base font-medium mb-1">Trade Outcomes</h3>
-              <p className="text-white text-2xl font-bold mb-2">
+              <h3 className="text-white text-sm sm:text-base font-medium mb-1">Trade Outcomes</h3>
+              <p className="text-white text-xl sm:text-2xl font-bold mb-2">
                 {stats.totalTrades} Trades
               </p>
-              <div className="flex items-center gap-1 text-sm">
+              <div className="flex items-center gap-1 text-xs sm:text-sm">
                 <span className="text-gray-400">Last Month</span>
-                {formatPercentage(stats.totalTradesChange)}
+                <div className="text-xs sm:text-sm">
+                  {formatPercentage(stats.totalTradesChange)}
+                </div>
               </div>
             </div>
             
-            <div className="h-48 flex items-center justify-center">
+            <div className="h-40 sm:h-48 flex items-center justify-center">
               {tradeOutcomes.length > 0 ? (
                 <ResponsiveContainer width="100%" height="100%">
                   <PieChart>
@@ -359,8 +370,8 @@ export const Dashboard: React.FC = React.memo(() => {
                       data={tradeOutcomes}
                       cx="50%"
                       cy="50%"
-                      innerRadius={40}
-                      outerRadius={80}
+                      innerRadius={30}
+                      outerRadius={60}
                       paddingAngle={5}
                       dataKey="value"
                     >
@@ -373,28 +384,29 @@ export const Dashboard: React.FC = React.memo(() => {
                         backgroundColor: '#1F2937',
                         border: '1px solid #374151',
                         borderRadius: '8px',
-                        color: '#fff'
+                        color: '#fff',
+                        fontSize: '12px'
                       }}
                     />
                   </PieChart>
                 </ResponsiveContainer>
               ) : (
                 <div className="text-gray-400 text-center">
-                  <p>No trade data available</p>
-                  <p className="text-sm mt-1">Start logging trades to see outcomes</p>
+                  <p className="text-sm sm:text-base">No trade data available</p>
+                  <p className="text-xs sm:text-sm mt-1">Start logging trades to see outcomes</p>
                 </div>
               )}
             </div>
             
             {/* Legend */}
-            <div className="flex justify-center gap-6 mt-4">
+            <div className="flex flex-wrap justify-center gap-3 sm:gap-6 mt-4">
               {tradeOutcomes.map((outcome) => (
                 <div key={outcome.name} className="flex items-center gap-2">
                   <div 
-                    className="w-3 h-3 rounded-full" 
+                    className="w-3 h-3 rounded-full flex-shrink-0" 
                     style={{ backgroundColor: outcome.color }}
                   ></div>
-                  <span className="text-gray-400 text-sm">{outcome.name}</span>
+                  <span className="text-gray-400 text-xs sm:text-sm">{outcome.name}</span>
                 </div>
               ))}
             </div>

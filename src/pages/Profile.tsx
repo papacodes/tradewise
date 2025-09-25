@@ -1,9 +1,12 @@
 import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { supabase } from '../lib/supabase';
-import { Camera, Edit2, Save, X, User, Mail, Calendar, Shield, Palette, Eye, EyeOff } from 'lucide-react';
+import { Camera, Edit2, Save, X, User, Mail, Calendar, Shield, Palette, Eye, EyeOff, Crown, Zap, Check } from 'lucide-react';
 import { toast } from 'sonner';
 import { Layout } from '../components/Layout';
+import TierBadge from '../components/TierBadge';
+import UpgradePrompt from '../components/UpgradePrompt';
+import { useSubscription } from '../hooks/useSubscriptionHooks';
 import { useCachedUserProfile } from '../hooks/useSupabaseCache';
 import { cacheUtils } from '../utils/cacheUtils';
 import { MFASetup } from '../components/MFASetup';
@@ -18,6 +21,7 @@ import {
   preventSQLInjection,
 
 } from '../utils/validation';
+import { getTierDisplayName, SUBSCRIPTION_PLANS } from '../types/subscription';
 
 interface UserProfile {
   id: string;
@@ -58,6 +62,7 @@ const Profile: React.FC = () => {
   const { user } = useAuth();
   const [sessions, setSessions] = useState<UserSession[]>([]);
   const [sessionsLoading, setSessionsLoading] = useState(true);
+  const { subscriptionInfo, accountCounts, loading: subscriptionLoading } = useSubscription();
   
   // Use cached profile data
   const { data: profile, loading: profileLoading, refetch: refetchProfile } = useCachedUserProfile(user?.id) as {
@@ -348,14 +353,14 @@ const Profile: React.FC = () => {
 
   return (
     <Layout>
-      <div className="max-w-4xl mx-auto px-4 sm:px-6 lg:px-8 py-8">
+      <div className="max-w-4xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6 md:py-8">
         {/* Profile Header */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 mb-8">
-          <div className="p-6">
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 mb-6 sm:mb-8">
+          <div className="p-4 sm:p-6">
             <div className="flex flex-col sm:flex-row items-center sm:items-start space-y-4 sm:space-y-0 sm:space-x-6">
               {/* Avatar */}
               <div className="relative">
-                <div className="w-24 h-24 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden">
+                <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full bg-gray-200 dark:bg-gray-700 flex items-center justify-center overflow-hidden">
                   {profile.avatar_url ? (
                     <img
                       src={profile.avatar_url}
@@ -363,13 +368,13 @@ const Profile: React.FC = () => {
                       className="w-full h-full object-cover"
                     />
                   ) : (
-                    <User className="w-12 h-12 text-gray-400" />
+                    <User className="w-10 h-10 sm:w-12 sm:h-12 text-gray-400" />
                   )}
                 </div>
                 <button
                   onClick={() => fileInputRef.current?.click()}
                   disabled={uploadingAvatar}
-                  className="absolute -bottom-2 -right-2 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full shadow-lg transition-colors disabled:opacity-50"
+                  className="absolute -bottom-2 -right-2 bg-blue-600 hover:bg-blue-700 text-white p-2 rounded-full shadow-lg transition-colors disabled:opacity-50 min-h-[40px] min-w-[40px] touch-manipulation"
                 >
                   <Camera className="w-4 h-4" />
                 </button>
@@ -384,19 +389,19 @@ const Profile: React.FC = () => {
 
               {/* User Info */}
               <div className="flex-1 text-center sm:text-left">
-                <h1 className="text-2xl font-bold text-gray-900 dark:text-white">
+                <h1 className="text-xl sm:text-2xl font-bold text-gray-900 dark:text-white break-words">
                   {profile.first_name && profile.last_name
                     ? `${profile.first_name} ${profile.last_name}`
                     : profile.email}
                 </h1>
-                <div className="flex flex-col sm:flex-row items-center sm:items-start space-y-2 sm:space-y-0 sm:space-x-4 mt-2 text-sm text-gray-600 dark:text-gray-400">
+                <div className="flex flex-col sm:flex-row items-center sm:items-start space-y-2 sm:space-y-0 sm:space-x-4 mt-2 text-xs sm:text-sm text-gray-600 dark:text-gray-400">
                   <div className="flex items-center space-x-1">
-                    <Mail className="w-4 h-4" />
-                    <span>{profile.email}</span>
+                    <Mail className="w-4 h-4 flex-shrink-0" />
+                    <span className="break-all">{profile.email}</span>
                   </div>
                   <div className="flex items-center space-x-1">
-                    <Calendar className="w-4 h-4" />
-                    <span>Joined {new Date(profile.created_at).toLocaleDateString()}</span>
+                    <Calendar className="w-4 h-4 flex-shrink-0" />
+                    <span className="whitespace-nowrap">Joined {new Date(profile.created_at).toLocaleDateString()}</span>
                   </div>
                   {profile.last_login_at && (
                     <div className="flex items-center space-x-1">
@@ -409,17 +414,154 @@ const Profile: React.FC = () => {
           </div>
         </div>
 
+        {/* Subscription Tier Section */}
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 mb-6 sm:mb-8">
+          <div className="p-4 sm:p-6">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white flex items-center space-x-2 mb-4 sm:mb-6">
+              <Crown className="w-5 h-5 flex-shrink-0" />
+              <span>Subscription Plan</span>
+            </h2>
+
+            {subscriptionLoading ? (
+              <div className="animate-pulse">
+                <div className="h-4 bg-gray-200 dark:bg-gray-700 rounded w-1/4 mb-2"></div>
+                <div className="h-3 bg-gray-200 dark:bg-gray-700 rounded w-1/2"></div>
+              </div>
+            ) : (
+              <div className="space-y-6">
+                {/* Current Plan */}
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between space-y-4 sm:space-y-0">
+                  <div className="flex items-center space-x-3">
+                    <TierBadge tier={subscriptionInfo?.tier || 'free'} size="lg" />
+                    <div>
+                      <h3 className="text-lg font-medium text-gray-900 dark:text-white">
+                        {getTierDisplayName(subscriptionInfo?.tier || 'free')} Plan
+                      </h3>
+                      <p className="text-sm text-gray-600 dark:text-gray-400">
+                        {subscriptionInfo?.tier === 'free' 
+                          ? 'Get started with basic features'
+                          : subscriptionInfo?.tier === 'pro'
+                          ? 'Advanced features for serious traders'
+                          : 'Complete trading solution for professionals'
+                        }
+                      </p>
+                    </div>
+                  </div>
+                  
+                  {subscriptionInfo?.tier === 'free' && (
+                    <a
+                      href="/pricing"
+                      className="inline-flex items-center justify-center px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors min-h-[40px] touch-manipulation"
+                    >
+                      <Zap className="w-4 h-4 mr-2" />
+                      Upgrade Plan
+                    </a>
+                  )}
+                </div>
+
+                {/* Plan Features & Usage */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                  {/* Current Usage */}
+                  <div className="space-y-4">
+                    <h4 className="text-sm font-medium text-gray-900 dark:text-white">Current Usage</h4>
+                    <div className="space-y-3">
+                      <div className="flex items-center justify-between">
+                        <span className="text-sm text-gray-600 dark:text-gray-400">Trading Accounts</span>
+                        <span className="text-sm font-medium text-gray-900 dark:text-white">
+                          {accountCounts?.accounts || 0} / {subscriptionInfo?.tier === 'free' ? '2' : subscriptionInfo?.tier === 'pro' ? '10' : '∞'}
+                        </span>
+                      </div>
+                      
+                      {/* Progress bar for account usage */}
+                      {subscriptionInfo?.tier !== 'enterprise' && (
+                        <div className="w-full bg-gray-200 dark:bg-gray-700 rounded-full h-2">
+                          <div 
+                            className={`h-2 rounded-full transition-all duration-300 ${
+                              subscriptionInfo?.tier === 'free' 
+                                ? (accountCounts?.accounts || 0) >= 2 ? 'bg-red-500' : 'bg-blue-500'
+                                : (accountCounts?.accounts || 0) >= 10 ? 'bg-red-500' : 'bg-blue-500'
+                            }`}
+                            style={{
+                              width: `${Math.min(100, ((accountCounts?.accounts || 0) / (subscriptionInfo?.tier === 'free' ? 2 : 10)) * 100)}%`
+                            }}
+                          ></div>
+                        </div>
+                      )}
+                    </div>
+                  </div>
+
+                  {/* Plan Benefits */}
+                  <div className="space-y-4">
+                    <h4 className="text-sm font-medium text-gray-900 dark:text-white">Plan Benefits</h4>
+                    <div className="space-y-2">
+                      {SUBSCRIPTION_PLANS.find(plan => plan.tier === (subscriptionInfo?.tier || 'free'))?.features.slice(0, 4).map((feature, index) => (
+                        <div key={index} className="flex items-center space-x-2">
+                          <Check className="w-4 h-4 text-green-500 flex-shrink-0" />
+                          <span className="text-sm text-gray-600 dark:text-gray-400">{feature.name}</span>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                </div>
+
+                {/* Subscription Status */}
+                {subscriptionInfo?.tier !== 'free' && (
+                  <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+                    <div className="flex items-center justify-between text-sm">
+                      <span className="text-gray-600 dark:text-gray-400">Status</span>
+                      <span className={`font-medium ${
+                        subscriptionInfo?.status === 'active' 
+                          ? 'text-green-600 dark:text-green-400'
+                          : subscriptionInfo?.status === 'trialing'
+                          ? 'text-blue-600 dark:text-blue-400'
+                          : 'text-red-600 dark:text-red-400'
+                      }`}>
+                        {subscriptionInfo?.status === 'active' ? 'Active' :
+                         subscriptionInfo?.status === 'trialing' ? 'Trial' :
+                         subscriptionInfo?.status === 'past_due' ? 'Past Due' :
+                         subscriptionInfo?.status === 'canceled' ? 'Canceled' : 'Inactive'}
+                      </span>
+                    </div>
+                    
+                    {subscriptionInfo?.subscription_end_date && (
+                      <div className="flex items-center justify-between text-sm mt-2">
+                        <span className="text-gray-600 dark:text-gray-400">
+                          {subscriptionInfo?.status === 'trialing' ? 'Trial ends' : 'Next billing'}
+                        </span>
+                        <span className="text-gray-900 dark:text-white">
+                          {new Date(subscriptionInfo.subscription_end_date).toLocaleDateString()}
+                        </span>
+                      </div>
+                    )}
+                  </div>
+                )}
+
+                {/* Upgrade Prompt for Free Users */}
+                {subscriptionInfo?.tier === 'free' && (accountCounts?.accounts || 0) >= 2 && (
+                  <div className="border-t border-gray-200 dark:border-gray-700 pt-4">
+                    <UpgradePrompt 
+                      currentTier="free"
+                      feature="unlimited_accounts"
+                      description="You've reached your account limit. Upgrade to add more trading accounts."
+                    />
+                  </div>
+                )}
+              </div>
+            )}
+          </div>
+        </div>
+
         {/* Personal Data Section */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 mb-8">
-          <div className="p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center space-x-2">
-                <User className="w-5 h-5" />
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 mb-6 sm:mb-8">
+          <div className="p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 space-y-3 sm:space-y-0">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white flex items-center space-x-2">
+                <User className="w-5 h-5 flex-shrink-0" />
                 <span>Personal Information</span>
               </h2>
               <button
                 onClick={() => setEditingPersonal(!editingPersonal)}
-                className="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                className="flex items-center justify-center space-x-2 px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 min-h-[40px] touch-manipulation"
               >
                 {editingPersonal ? <X className="w-4 h-4" /> : <Edit2 className="w-4 h-4" />}
                 <span>{editingPersonal ? 'Cancel' : 'Edit'}</span>
@@ -435,16 +577,16 @@ const Profile: React.FC = () => {
         </div>
 
         {/* Preferences Section */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 mb-8">
-          <div className="p-6">
-            <div className="flex items-center justify-between mb-6">
-              <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center space-x-2">
-                <Palette className="w-5 h-5" />
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 mb-6 sm:mb-8">
+          <div className="p-4 sm:p-6">
+            <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 sm:mb-6 space-y-3 sm:space-y-0">
+              <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white flex items-center space-x-2">
+                <Palette className="w-5 h-5 flex-shrink-0" />
                 <span>Preferences</span>
               </h2>
               <button
                 onClick={() => setEditingPreferences(!editingPreferences)}
-                className="flex items-center space-x-2 px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300"
+                className="flex items-center justify-center space-x-2 px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 min-h-[40px] touch-manipulation"
               >
                 {editingPreferences ? <X className="w-4 h-4" /> : <Edit2 className="w-4 h-4" />}
                 <span>{editingPreferences ? 'Cancel' : 'Edit'}</span>
@@ -460,31 +602,31 @@ const Profile: React.FC = () => {
         </div>
 
         {/* Security Section */}
-        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 mb-8">
-          <div className="p-6">
-            <h2 className="text-xl font-semibold text-gray-900 dark:text-white flex items-center space-x-2 mb-6">
-              <Shield className="w-5 h-5" />
+        <div className="bg-white dark:bg-gray-800 rounded-lg shadow-sm border border-gray-200 dark:border-gray-700 mb-6 sm:mb-8">
+          <div className="p-4 sm:p-6">
+            <h2 className="text-lg sm:text-xl font-semibold text-gray-900 dark:text-white flex items-center space-x-2 mb-4 sm:mb-6">
+              <Shield className="w-5 h-5 flex-shrink-0" />
               <span>Security</span>
             </h2>
 
             <div className="space-y-6">
               {/* Password Change */}
               <div className="border-b border-gray-200 dark:border-gray-700 pb-6">
-                <div className="flex items-center justify-between mb-4">
+                <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between mb-4 space-y-3 sm:space-y-0">
                   <div>
-                    <h3 className="text-lg font-medium text-gray-900 dark:text-white">Password</h3>
+                    <h3 className="text-base sm:text-lg font-medium text-gray-900 dark:text-white">Password</h3>
                     <p className="text-sm text-gray-600 dark:text-gray-400">Change your account password</p>
                   </div>
                   <button
                     onClick={() => setShowPasswordForm(!showPasswordForm)}
-                    className="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 border border-blue-600 dark:border-blue-400 rounded-md hover:bg-blue-50 dark:hover:bg-blue-900/20"
+                    className="px-4 py-2 text-sm font-medium text-blue-600 hover:text-blue-700 dark:text-blue-400 dark:hover:text-blue-300 border border-blue-600 dark:border-blue-400 rounded-md hover:bg-blue-50 dark:hover:bg-blue-900/20 min-h-[40px] touch-manipulation w-full sm:w-auto"
                   >
                     Change Password
                   </button>
                 </div>
 
                 {showPasswordForm && (
-                  <div className="bg-gray-50 dark:bg-gray-900 p-4 rounded-lg space-y-4">
+                  <div className="bg-gray-50 dark:bg-gray-900 p-3 sm:p-4 rounded-lg space-y-4">
                     <div>
                       <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
                         Current Password
@@ -494,12 +636,12 @@ const Profile: React.FC = () => {
                           type={showPasswords.current ? 'text' : 'password'}
                           value={passwordForm.currentPassword}
                           onChange={(e) => setPasswordForm(prev => ({ ...prev, currentPassword: e.target.value }))}
-                          className="w-full px-3 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
+                          className="w-full px-3 py-3 pr-12 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white text-base"
                         />
                         <button
                           type="button"
                           onClick={() => setShowPasswords(prev => ({ ...prev, current: !prev.current }))}
-                          className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                          className="absolute inset-y-0 right-0 pr-3 flex items-center min-h-[40px] min-w-[40px] touch-manipulation"
                         >
                           {showPasswords.current ? <EyeOff className="w-4 h-4 text-gray-400" /> : <Eye className="w-4 h-4 text-gray-400" />}
                         </button>
@@ -514,12 +656,12 @@ const Profile: React.FC = () => {
                           type={showPasswords.new ? 'text' : 'password'}
                           value={passwordForm.newPassword}
                           onChange={(e) => setPasswordForm(prev => ({ ...prev, newPassword: e.target.value }))}
-                          className="w-full px-3 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
+                          className="w-full px-3 py-3 pr-12 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white text-base"
                         />
                         <button
                           type="button"
                           onClick={() => setShowPasswords(prev => ({ ...prev, new: !prev.new }))}
-                          className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                          className="absolute inset-y-0 right-0 pr-3 flex items-center min-h-[40px] min-w-[40px] touch-manipulation"
                         >
                           {showPasswords.new ? <EyeOff className="w-4 h-4 text-gray-400" /> : <Eye className="w-4 h-4 text-gray-400" />}
                         </button>
@@ -534,21 +676,21 @@ const Profile: React.FC = () => {
                           type={showPasswords.confirm ? 'text' : 'password'}
                           value={passwordForm.confirmPassword}
                           onChange={(e) => setPasswordForm(prev => ({ ...prev, confirmPassword: e.target.value }))}
-                          className="w-full px-3 py-2 pr-10 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white"
+                          className="w-full px-3 py-3 pr-12 border border-gray-300 dark:border-gray-600 rounded-md focus:outline-none focus:ring-2 focus:ring-blue-500 dark:bg-gray-800 dark:text-white text-base"
                         />
                         <button
                           type="button"
                           onClick={() => setShowPasswords(prev => ({ ...prev, confirm: !prev.confirm }))}
-                          className="absolute inset-y-0 right-0 pr-3 flex items-center"
+                          className="absolute inset-y-0 right-0 pr-3 flex items-center min-h-[40px] min-w-[40px] touch-manipulation"
                         >
                           {showPasswords.confirm ? <EyeOff className="w-4 h-4 text-gray-400" /> : <Eye className="w-4 h-4 text-gray-400" />}
                         </button>
                       </div>
                     </div>
-                    <div className="flex space-x-3">
+                    <div className="flex flex-col sm:flex-row space-y-3 sm:space-y-0 sm:space-x-3">
                       <button
                         onClick={changePassword}
-                        className="px-4 py-2 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors"
+                        className="w-full sm:w-auto px-4 py-3 bg-blue-600 hover:bg-blue-700 text-white text-sm font-medium rounded-md transition-colors min-h-[48px] touch-manipulation"
                       >
                         Update Password
                       </button>
@@ -557,7 +699,7 @@ const Profile: React.FC = () => {
                           setShowPasswordForm(false);
                           setPasswordForm({ currentPassword: '', newPassword: '', confirmPassword: '' });
                         }}
-                        className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800"
+                        className="w-full sm:w-auto px-4 py-3 text-sm font-medium text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 min-h-[48px] touch-manipulation"
                       >
                         Cancel
                       </button>
@@ -839,8 +981,8 @@ const PersonalDataForm: React.FC<{
   }, [formData, onSave]);
 
   return (
-    <form onSubmit={handleSubmit} className="space-y-6">
-      <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+    <form onSubmit={handleSubmit} className="gap-responsive">
+      <div className="grid grid-cols-1 md:grid-cols-2 gap-responsive">
         <div>
           <label className="block text-sm font-medium text-gray-700 dark:text-gray-300 mb-1">
             First Name
@@ -849,7 +991,7 @@ const PersonalDataForm: React.FC<{
             type="text"
             value={formData.first_name}
             onChange={(e) => handleInputChange('first_name', e.target.value)}
-            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 dark:bg-gray-800 dark:text-white ${
+            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 dark:bg-gray-800 dark:text-white input-touch text-responsive-base ${
               errors['first_name'] 
                 ? 'border-red-500 focus:ring-red-500' 
                 : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
@@ -867,7 +1009,7 @@ const PersonalDataForm: React.FC<{
             type="text"
             value={formData.last_name}
             onChange={(e) => handleInputChange('last_name', e.target.value)}
-            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 dark:bg-gray-800 dark:text-white ${
+            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 dark:bg-gray-800 dark:text-white input-touch text-responsive-base ${
               errors['last_name'] 
                 ? 'border-red-500 focus:ring-red-500' 
                 : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
@@ -885,7 +1027,7 @@ const PersonalDataForm: React.FC<{
             type="tel"
             value={formData.phone}
             onChange={(e) => handleInputChange('phone', e.target.value)}
-            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 dark:bg-gray-800 dark:text-white ${
+            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 dark:bg-gray-800 dark:text-white input-touch text-responsive-base ${
               errors['phone'] 
                 ? 'border-red-500 focus:ring-red-500' 
                 : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
@@ -903,7 +1045,7 @@ const PersonalDataForm: React.FC<{
             type="text"
             value={formData.location}
             onChange={(e) => handleInputChange('location', e.target.value)}
-            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 dark:bg-gray-800 dark:text-white ${
+            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 dark:bg-gray-800 dark:text-white input-touch text-responsive-base ${
               errors['location'] 
                 ? 'border-red-500 focus:ring-red-500' 
                 : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
@@ -921,7 +1063,7 @@ const PersonalDataForm: React.FC<{
             type="url"
             value={formData.website}
             onChange={(e) => handleInputChange('website', e.target.value)}
-            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 dark:bg-gray-800 dark:text-white ${
+            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 dark:bg-gray-800 dark:text-white input-touch text-responsive-base ${
               errors['website'] 
                 ? 'border-red-500 focus:ring-red-500' 
                 : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
@@ -940,7 +1082,7 @@ const PersonalDataForm: React.FC<{
             value={formData.bio}
             onChange={(e) => handleInputChange('bio', e.target.value)}
             rows={4}
-            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 dark:bg-gray-800 dark:text-white ${
+            className={`w-full px-3 py-2 border rounded-md focus:outline-none focus:ring-2 dark:bg-gray-800 dark:text-white input-touch text-responsive-base ${
               errors['bio'] 
                 ? 'border-red-500 focus:ring-red-500' 
                 : 'border-gray-300 dark:border-gray-600 focus:ring-blue-500'
@@ -955,11 +1097,11 @@ const PersonalDataForm: React.FC<{
           </p>
         </div>
       </div>
-      <div className="flex space-x-3">
+      <div className="flex flex-col sm:flex-row gap-3">
         <button
           type="submit"
           disabled={isSubmitting || Object.keys(errors).length > 0}
-          className="flex items-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white text-sm font-medium rounded-md transition-colors"
+          className="flex items-center justify-center space-x-2 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed text-white text-sm font-medium rounded-md transition-colors btn-touch"
         >
           <Save className="w-4 h-4" />
           <span>{isSubmitting ? 'Saving...' : 'Save Changes'}</span>
@@ -967,7 +1109,7 @@ const PersonalDataForm: React.FC<{
         <button
           type="button"
           onClick={onCancel}
-          className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800"
+          className="px-4 py-2 text-sm font-medium text-gray-700 dark:text-gray-300 border border-gray-300 dark:border-gray-600 rounded-md hover:bg-gray-50 dark:hover:bg-gray-800 btn-touch"
         >
           Cancel
         </button>

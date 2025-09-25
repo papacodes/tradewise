@@ -26,7 +26,7 @@ export const Login: React.FC = () => {
   const [showMFAVerification, setShowMFAVerification] = useState(false);
   const [mfaFactorId, setMfaFactorId] = useState<string | null>(null);
   const [loginCredentials, setLoginCredentials] = useState<{ email: string; password: string } | null>(null);
-  const { } = useAuth();
+  const { signIn, user, loading } = useAuth();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -46,6 +46,14 @@ export const Login: React.FC = () => {
   useEffect(() => {
     document.title = 'Login - TradeWise';
   }, []);
+
+  // Redirect if user is already authenticated
+  useEffect(() => {
+    if (!loading && user) {
+      console.log('🔄 Login: User already authenticated, redirecting to dashboard...');
+      navigate(from, { replace: true });
+    }
+  }, [user, loading, navigate, from]);
 
   const onSubmit = async (data: LoginFormData) => {
     setIsLoading(true);
@@ -82,11 +90,8 @@ export const Login: React.FC = () => {
         return;
       }
       
-      // Try to sign in with password first
-      const { data: signInData, error: signInError } = await supabase.auth.signInWithPassword({
-        email: emailValidation.sanitized,
-        password: data.password,
-      });
+      // Use AuthContext signIn method
+      const { error: signInError } = await signIn(emailValidation.sanitized, data.password);
       
       if (signInError) {
         // Check if MFA is required
@@ -117,11 +122,9 @@ export const Login: React.FC = () => {
         return;
       }
       
-      // If no MFA required, proceed with normal login
-      if (signInData.session) {
-        toast.success('Login successful!');
-        navigate(from, { replace: true });
-      }
+      // If no error, login was successful
+      toast.success('Login successful!');
+      navigate(from, { replace: true });
     } catch (error) {
       console.error('Login error:', error);
       setError('root', {
@@ -149,14 +152,14 @@ export const Login: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-900 flex flex-col">
       {/* Header */}
-      <header className="flex items-center justify-between border-b border-gray-700 px-10 py-3">
-        <div className="flex items-center gap-4">
-          <TrendingUp className="w-8 h-8 text-blue-400" />
-          <h1 className="text-white text-lg font-bold">TradePro</h1>
+      <header className="flex items-center justify-between border-b border-gray-700 px-4 sm:px-6 lg:px-8 py-3 sm:py-4">
+        <div className="flex items-center gap-2 sm:gap-3">
+          <TrendingUp className="w-6 h-6 sm:w-7 sm:h-7 lg:w-8 lg:h-8 text-blue-400" />
+          <h1 className="text-white text-base sm:text-lg lg:text-xl font-bold">TradeWise</h1>
         </div>
-        <div className="flex items-center gap-8">
+        <div className="flex items-center gap-4 sm:gap-6 lg:gap-8">
           {/* Desktop Navigation */}
-          <nav className="hidden md:flex items-center gap-9">
+          <nav className="hidden md:flex items-center gap-6 lg:gap-8">
             <Link to="/" className="text-white text-sm font-medium hover:text-blue-400 transition-colors">
               Home
             </Link>
@@ -172,7 +175,7 @@ export const Login: React.FC = () => {
           </nav>
           <Link
             to="/register"
-            className="hidden md:block bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors"
+            className="hidden md:inline-flex bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition-colors min-h-[44px] items-center justify-center touch-manipulation"
           >
             Get Started
           </Link>
@@ -180,7 +183,7 @@ export const Login: React.FC = () => {
           {/* Mobile Menu Button */}
           <button
             onClick={() => setIsMobileMenuOpen(!isMobileMenuOpen)}
-            className="md:hidden text-white hover:text-blue-400 transition-colors"
+            className="md:hidden text-white hover:text-blue-400 transition-colors btn-touch"
             aria-label="Toggle mobile menu"
           >
             {isMobileMenuOpen ? <X size={24} /> : <Menu size={24} />}
@@ -196,7 +199,7 @@ export const Login: React.FC = () => {
                 <span className="text-lg font-semibold text-white">Menu</span>
                 <button
                   onClick={() => setIsMobileMenuOpen(false)}
-                  className="text-white hover:text-blue-400 transition-colors"
+                  className="text-white hover:text-blue-400 transition-colors btn-touch"
                   aria-label="Close mobile menu"
                 >
                   <X size={24} />
@@ -234,7 +237,7 @@ export const Login: React.FC = () => {
                 <div className="pt-4 border-t border-gray-700">
                   <Link
                     to="/register"
-                    className="block bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-center text-sm font-bold"
+                    className="block bg-blue-600 text-white px-4 py-2 rounded-lg hover:bg-blue-700 transition-colors text-center text-sm font-bold btn-touch"
                     onClick={() => setIsMobileMenuOpen(false)}
                   >
                     Get Started
@@ -247,12 +250,12 @@ export const Login: React.FC = () => {
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col items-center justify-center px-40 py-10" role="main">
-        <div className="w-full max-w-2xl">
-          <h2 className="text-white text-3xl font-bold text-center mb-3" id="login-heading">
+      <main className="flex-1 flex flex-col items-center justify-center spacing-responsive-md py-8 sm:py-12" role="main">
+        <div className="w-full max-w-sm sm:max-w-md">
+          <h2 className="text-white text-responsive-2xl font-bold text-center mb-2 sm:mb-3" id="login-heading">
             Welcome to TradeWise
           </h2>
-          <p className="text-white text-center mb-8">
+          <p className="text-gray-300 text-center mb-6 sm:mb-8 text-responsive-sm leading-relaxed">
             Track your trades, analyze your performance, and improve your trading strategy with TradeWise.
           </p>
 
@@ -260,7 +263,7 @@ export const Login: React.FC = () => {
             {/* Email Field */}
             <div>
               <label htmlFor="email" className="sr-only">Email Address</label>
-              <div className={`bg-gray-800 rounded-lg p-4 ${errors.email ? 'border border-red-500/50' : ''}`}>
+              <div className={`bg-gray-800 rounded-lg p-3 sm:p-4 transition-colors ${errors.email ? 'border border-red-500/50' : 'border border-transparent hover:border-gray-600'}`}>
                 <input
                   {...register('email', {
                     onChange: () => trigger('email')
@@ -268,7 +271,7 @@ export const Login: React.FC = () => {
                   id="email"
                   type="email"
                   placeholder="Email"
-                  className="w-full bg-transparent text-gray-300 placeholder-gray-500 outline-none text-base"
+                  className="w-full bg-transparent text-gray-300 placeholder-gray-500 outline-none input-touch text-responsive-base"
                   disabled={isLoading}
                   aria-invalid={errors.email ? 'true' : 'false'}
                   aria-describedby={errors.email ? 'email-error' : undefined}
@@ -276,20 +279,20 @@ export const Login: React.FC = () => {
                 />
               </div>
               {errors.email && (
-                <p className="text-red-400 text-sm mt-1" id="email-error" role="alert">{errors.email.message}</p>
+                <p className="text-red-400 text-sm mt-2" id="email-error" role="alert">{errors.email.message}</p>
               )}
             </div>
 
             {/* Password Field */}
             <div>
               <label htmlFor="password" className="sr-only">Password</label>
-              <div className="bg-gray-800 rounded-lg p-4 flex items-center">
+              <div className={`bg-gray-800 rounded-lg p-3 sm:p-4 flex items-center transition-colors ${errors.password ? 'border border-red-500/50' : 'border border-transparent hover:border-gray-600'}`}>
                 <input
                   {...register('password')}
                   id="password"
                   type={showPassword ? 'text' : 'password'}
                   placeholder="Password"
-                  className="flex-1 bg-transparent text-gray-300 placeholder-gray-500 outline-none text-base"
+                  className="flex-1 bg-transparent text-gray-300 placeholder-gray-500 outline-none input-touch text-responsive-base"
                   disabled={isLoading}
                   aria-invalid={errors.password ? 'true' : 'false'}
                   aria-describedby={errors.password ? 'password-error' : 'password-toggle'}
@@ -298,7 +301,7 @@ export const Login: React.FC = () => {
                 <button
                   type="button"
                   onClick={() => setShowPassword(!showPassword)}
-                  className="text-gray-500 hover:text-gray-300 ml-2 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 rounded"
+                  className="text-gray-500 hover:text-gray-300 ml-3 p-1 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-800 rounded min-w-[44px] min-h-[44px] flex items-center justify-center touch-manipulation"
                   disabled={isLoading}
                   aria-label={showPassword ? 'Hide password' : 'Show password'}
                   id="password-toggle"
@@ -307,7 +310,7 @@ export const Login: React.FC = () => {
                 </button>
               </div>
               {errors.password && (
-                <p className="text-red-400 text-sm mt-1" id="password-error" role="alert">{errors.password.message}</p>
+                <p className="text-red-400 text-sm mt-2" id="password-error" role="alert">{errors.password.message}</p>
               )}
             </div>
 
@@ -319,27 +322,27 @@ export const Login: React.FC = () => {
             )}
 
             {/* Submit Button */}
-            <div className="flex justify-center">
+            <div className="flex justify-center pt-4">
               <button
                 type="submit"
                 disabled={isLoading}
-                className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:cursor-not-allowed text-white px-56 py-3 rounded-lg text-base font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900"
+                className="w-full sm:w-auto bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:cursor-not-allowed text-white px-8 sm:px-16 md:px-24 lg:px-56 py-3 rounded-lg text-base font-bold transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900 min-h-[48px] touch-manipulation"
                 aria-describedby={errors.root ? 'login-error' : undefined}
               >
-                {isLoading ? 'Signing In...' : 'Log In'}
+                {isLoading ? 'Signing In...' : 'Sign In'}
               </button>
             </div>
           </form>
 
-          <p className="text-white text-center mt-6">
+          <p className="text-white text-center mt-8">
             Don't have an account?{' '}
-            <Link to="/register" className="text-blue-400 hover:text-blue-300 transition-colors">
+            <Link to="/register" className="text-blue-400 hover:text-blue-300 transition-colors font-medium">
               Sign up
             </Link>
           </p>
 
-          <div className="text-center mt-4">
-            <Link to="/forgot-password" className="text-blue-400 hover:text-blue-300 text-sm transition-colors">
+          <div className="text-center mt-4 sm:mt-6">
+            <Link to="/forgot-password" className="text-blue-400 hover:text-blue-300 text-sm sm:text-base transition-colors">
               Forgot your password?
             </Link>
           </div>

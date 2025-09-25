@@ -133,7 +133,7 @@ export const ForgotPassword: React.FC = React.memo(() => {
                 </p>
               </div>
 
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6" role="form" aria-labelledby="forgot-password-heading">
                 {/* Email Field */}
                 <div>
                   <div className={`bg-gray-800 rounded-lg p-4 ${errors.email ? 'border border-red-500/50' : ''}`}>
@@ -160,11 +160,12 @@ export const ForgotPassword: React.FC = React.memo(() => {
                 )}
 
                 {/* Submit Button */}
-                <div className="flex justify-center">
+                <div className="pt-4">
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:cursor-not-allowed text-white px-56 py-3 rounded-lg text-base font-bold transition-colors"
+                    className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:cursor-not-allowed text-white py-3 sm:py-4 rounded-lg text-base sm:text-lg font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 focus:ring-offset-gray-900 min-h-[52px] touch-manipulation"
+                    aria-describedby={errors.root ? 'forgot-password-error' : undefined}
                   >
                     {isLoading ? 'Sending...' : 'Send Reset Link'}
                   </button>

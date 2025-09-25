@@ -712,38 +712,38 @@ export const TradeLog: React.FC = React.memo(() => {
 
   return (
     <Layout>
-      <div className="p-6">
-        <h1 className="text-3xl font-bold text-white mb-8">
+      <div className="p-3 sm:p-4 md:p-6 max-w-4xl mx-auto">
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-bold text-white mb-4 sm:mb-6 md:mb-8 text-center">
           {isEditMode ? 'Edit Trade' : 'Log Trade'}
         </h1>
         
         {accounts.length === 0 ? (
-          <div className="max-w-2xl bg-yellow-50 border border-yellow-200 rounded-lg p-6">
-            <div className="flex items-center">
-              <AlertCircle className="h-5 w-5 text-yellow-600 mr-3" />
+          <div className="max-w-2xl bg-yellow-50 border border-yellow-200 rounded-lg p-3 sm:p-4 md:p-6">
+            <div className="flex items-start sm:items-center">
+              <AlertCircle className="h-4 w-4 sm:h-5 sm:w-5 text-yellow-600 mr-2 sm:mr-3 flex-shrink-0 mt-0.5 sm:mt-0" />
               <div>
-                <h3 className="text-sm font-medium text-yellow-800">No Trading Accounts Found</h3>
-                <p className="text-sm text-yellow-700 mt-1">
+                <h3 className="text-xs sm:text-sm font-medium text-yellow-800">No Trading Accounts Found</h3>
+                <p className="text-xs sm:text-sm text-yellow-700 mt-1">
                   You need to add a trading account before logging trades.
                 </p>
                 <Link
                   to="/accounts"
-                  className="inline-flex items-center mt-3 text-sm font-medium text-yellow-800 hover:text-yellow-900"
+                  className="inline-flex items-center mt-2 sm:mt-3 text-xs sm:text-sm font-medium text-yellow-800 hover:text-yellow-900"
                 >
-                  <ExternalLink className="h-4 w-4 mr-1" />
+                  <ExternalLink className="h-3 w-3 sm:h-4 sm:w-4 mr-1" />
                   Add Trading Account
                 </Link>
               </div>
             </div>
           </div>
         ) : (
-          <form onSubmit={handleSubmit(onSubmit)} className="max-w-2xl space-y-6">
+          <form onSubmit={handleSubmit(onSubmit)} className="max-w-2xl mx-auto space-y-4 sm:space-y-6">
           {/* Account Selection */}
           <div>
-            <label className="block text-white font-medium mb-2">Account</label>
+            <label className="block text-white font-medium mb-2 text-sm sm:text-base">Account</label>
             <select
               {...register('account_id')}
-              className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 sm:px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-touch text-responsive-base"
             >
               <option value="">Select Account</option>
               {accounts.map((account) => (
@@ -753,17 +753,17 @@ export const TradeLog: React.FC = React.memo(() => {
               ))}
             </select>
             {errors.account_id && (
-              <p className="text-red-400 text-sm mt-1">{errors.account_id.message}</p>
+              <p className="text-red-400 text-xs sm:text-sm mt-1">{errors.account_id.message}</p>
             )}
           </div>
 
           {/* Trade Name */}
           <div>
-            <label className="block text-white font-medium mb-2">Trade Name</label>
+            <label className="block text-white font-medium mb-2 text-sm sm:text-base">Trade Name</label>
             <input
               type="text"
               {...register('name')}
-              className={`w-full px-4 py-3 bg-gray-800 border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent ${
+              className={`w-full px-3 sm:px-4 py-3 bg-gray-800 border rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:border-transparent input-touch text-responsive-base ${
                 nameValidationError || errors.name 
                   ? 'border-red-500 focus:ring-red-500' 
                   : 'border-gray-600 focus:ring-blue-500'
@@ -771,31 +771,31 @@ export const TradeLog: React.FC = React.memo(() => {
               placeholder="Enter trade name (letters, spaces, hyphens, apostrophes only)"
             />
             {(nameValidationError || errors.name) && (
-              <p className="text-red-400 text-sm mt-1">
+              <p className="text-red-400 text-xs sm:text-sm mt-1">
                 {nameValidationError || errors.name?.message}
               </p>
             )}
             {watchedName && !nameValidationError && !errors.name && (
-              <p className="text-green-400 text-sm mt-1">✓ Valid trade name</p>
+              <p className="text-green-400 text-xs sm:text-sm mt-1">✓ Valid trade name</p>
             )}
           </div>
 
           {/* Entry Date and Time */}
           <div>
-            <label className="block text-white font-medium mb-2">Entry Date & Time</label>
+            <label className="block text-white font-medium mb-2 text-sm sm:text-base">Entry Date & Time</label>
             <input
               type="datetime-local"
               {...register('entry_datetime')}
-              className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 sm:px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-touch text-responsive-base"
             />
             {errors.entry_datetime && (
-              <p className="text-red-400 text-sm mt-1">{errors.entry_datetime.message}</p>
+              <p className="text-red-400 text-xs sm:text-sm mt-1">{errors.entry_datetime.message}</p>
             )}
           </div>
 
           {/* Symbol - Searchable Currency Pairs */}
             <div className="relative symbol-dropdown-container">
-              <label className="block text-white font-medium mb-2">Currency Pair / Symbol *</label>
+              <label className="block text-white font-medium mb-2 text-sm sm:text-base">Currency Pair / Symbol *</label>
               <div className="relative">
                 <input
                   type="text"
@@ -807,25 +807,25 @@ export const TradeLog: React.FC = React.memo(() => {
                   }}
                   onFocus={() => setShowSymbolDropdown(true)}
                   placeholder="Search or type currency pair (e.g., EURUSD, AAPL, BTCUSD)"
-                  className="w-full px-4 py-3 pr-10 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                  className="w-full px-3 sm:px-4 py-3 pr-10 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-touch text-responsive-base"
                 />
-                <Search className="absolute right-3 top-3.5 h-5 w-5 text-gray-400" />
+                <Search className="absolute right-3 top-3.5 h-4 w-4 sm:h-5 sm:w-5 text-gray-400" />
                 
                 {/* Dropdown */}
                 {showSymbolDropdown && (
-                  <div className="absolute z-10 w-full mt-1 bg-gray-800 border border-gray-600 rounded-lg shadow-lg max-h-60 overflow-auto">
+                  <div className="absolute z-10 w-full mt-1 bg-gray-800 border border-gray-600 rounded-lg shadow-lg max-h-48 sm:max-h-60 overflow-auto">
                     {filteredCurrencyPairs.length > 0 ? (
                       filteredCurrencyPairs.map((pair) => (
                         <button
                           key={pair.id}
                           type="button"
                           onClick={() => handleSymbolSelect(pair.symbol)}
-                          className="w-full px-3 py-2 text-left hover:bg-gray-700 focus:bg-gray-700 focus:outline-none border-b border-gray-600 last:border-b-0"
+                          className="w-full px-3 py-3 sm:py-2 text-left hover:bg-gray-700 focus:bg-gray-700 focus:outline-none border-b border-gray-600 last:border-b-0 btn-touch"
                         >
-                          <div className="flex justify-between items-center">
-                            <div>
-                              <span className="font-medium text-white">{pair.symbol}</span>
-                              <span className="text-sm text-gray-400 ml-2">{pair.name}</span>
+                          <div className="flex flex-col sm:flex-row sm:justify-between sm:items-center gap-1 sm:gap-0">
+                            <div className="flex flex-col sm:flex-row sm:items-center">
+                              <span className="font-medium text-white text-sm sm:text-base">{pair.symbol}</span>
+                              <span className="text-xs sm:text-sm text-gray-400 sm:ml-2">{pair.name}</span>
                             </div>
                             <span className="text-xs text-gray-500 capitalize">{pair.category}</span>
                           </div>
@@ -850,16 +850,16 @@ export const TradeLog: React.FC = React.memo(() => {
                 )}
               </div>
               {errors.symbol && (
-                <p className="text-red-400 text-sm mt-1">{errors.symbol.message}</p>
+                <p className="text-red-400 text-xs sm:text-sm mt-1">{errors.symbol.message}</p>
               )}
             </div>
 
           {/* News Impact */}
           <div>
-            <label className="block text-white font-medium mb-2">News Impact</label>
+            <label className="block text-white font-medium mb-2 text-sm sm:text-base">News Impact</label>
             <select
               {...register('news_impact')}
-              className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 sm:px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-touch text-responsive-base"
             >
               <option value="">Select news impact</option>
               <option value="high">High</option>
@@ -868,33 +868,33 @@ export const TradeLog: React.FC = React.memo(() => {
               <option value="none">None</option>
             </select>
             {errors.news_impact && (
-              <p className="text-red-400 text-sm mt-1">{errors.news_impact.message}</p>
+              <p className="text-red-400 text-xs sm:text-sm mt-1">{errors.news_impact.message}</p>
             )}
           </div>
 
           {/* Market Bias and Trading Session Row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-3 sm:gap-4">
             <div>
-              <label className="block text-white font-medium mb-2">Market Bias *</label>
+              <label className="block text-white font-medium mb-2 text-sm sm:text-base">Market Bias *</label>
               <select
-                {...register('market_bias')}
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
+                  {...register('market_bias')}
+                  className="w-full px-3 sm:px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-touch text-responsive-base"
+                >
                 <option value="">Select market bias</option>
                 <option value="bullish">Bullish</option>
                 <option value="bearish">Bearish</option>
               </select>
               {errors.market_bias && (
-                <p className="text-red-400 text-sm mt-1">{errors.market_bias.message}</p>
+                <p className="text-red-400 text-xs sm:text-sm mt-1">{errors.market_bias.message}</p>
               )}
             </div>
             
             <div>
-              <label className="block text-white font-medium mb-2">Trading Session *</label>
+              <label className="block text-white font-medium mb-2 text-sm sm:text-base">Trading Session *</label>
               <select
-                {...register('trading_session')}
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-              >
+                  {...register('trading_session')}
+                  className="w-full px-3 sm:px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-touch text-responsive-base"
+                >
                 <option value="">Select trading session</option>
                 <option value="london">London</option>
                 <option value="new_york">New York</option>
@@ -902,88 +902,88 @@ export const TradeLog: React.FC = React.memo(() => {
                 <option value="sydney">Sydney</option>
               </select>
               {errors.trading_session && (
-                <p className="text-red-400 text-sm mt-1">{errors.trading_session.message}</p>
+                <p className="text-red-400 text-xs sm:text-sm mt-1">{errors.trading_session.message}</p>
               )}
             </div>
           </div>
 
           {/* Confluences */}
           <div>
-            <label className="block text-white font-medium mb-2">Confluences</label>
-            <div className="grid grid-cols-2 gap-2">
+            <label className="block text-white font-medium mb-2 text-sm sm:text-base">Confluences</label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
               {CONFLUENCE_OPTIONS.map((confluence) => (
-                <label key={confluence} className="flex items-center space-x-2 cursor-pointer">
+                <label key={confluence} className="flex items-center space-x-2 sm:space-x-3 cursor-pointer p-2 sm:p-1 hover:bg-gray-800 rounded touch-target">
                   <input
                     type="checkbox"
                     checked={selectedConfluences.includes(confluence)}
                     onChange={() => toggleConfluence(confluence)}
-                    className="rounded border-gray-600 bg-gray-800 text-blue-500 focus:ring-blue-500 focus:ring-offset-0"
+                    className="rounded border-gray-600 bg-gray-800 text-blue-500 focus:ring-blue-500 focus:ring-offset-0 w-4 h-4 sm:w-auto sm:h-auto"
                   />
-                  <span className="text-white text-sm">{confluence}</span>
+                  <span className="text-white text-sm sm:text-sm">{confluence}</span>
                 </label>
               ))}
             </div>
             {errors.confluences && (
-              <p className="text-red-400 text-sm mt-1">{errors.confluences.message}</p>
+              <p className="text-red-400 text-xs sm:text-sm mt-1">{errors.confluences.message}</p>
             )}
           </div>
 
           {/* Price Fields Row */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-3 sm:gap-4">
             <div>
-              <label className="block text-white font-medium mb-2">Entry Price *</label>
+              <label className="block text-white font-medium mb-2 text-sm sm:text-base">Entry Price *</label>
               <input
-                type="number"
-                step="0.00001"
-                {...register('entry_price', { valueAsNumber: true })}
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-                placeholder="0.00000"
-              />
+                  type="number"
+                  step="0.00001"
+                  {...register('entry_price', { valueAsNumber: true })}
+                  className="w-full px-3 sm:px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-touch text-responsive-base"
+                  placeholder="0.00000"
+                />
               {errors.entry_price && (
-                <p className="text-red-400 text-sm mt-1">{errors.entry_price.message}</p>
+                <p className="text-red-400 text-xs sm:text-sm mt-1">{errors.entry_price.message}</p>
               )}
             </div>
             
             <div>
-              <label className="block text-white font-medium mb-2">Stop Loss *</label>
+              <label className="block text-white font-medium mb-2 text-sm sm:text-base">Stop Loss *</label>
               <input
                 type="number"
                 step="0.00001"
                 {...register('stop_loss_price', { valueAsNumber: true })}
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 sm:px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-touch text-responsive-base"
                 placeholder="0.00000"
               />
               {errors.stop_loss_price && (
-                <p className="text-red-400 text-sm mt-1">{errors.stop_loss_price.message}</p>
+                <p className="text-red-400 text-xs sm:text-sm mt-1">{errors.stop_loss_price.message}</p>
               )}
             </div>
             
             <div>
-              <label className="block text-white font-medium mb-2">Take Profit *</label>
+              <label className="block text-white font-medium mb-2 text-sm sm:text-base">Take Profit *</label>
               <input
                 type="number"
                 step="0.00001"
                 {...register('take_profit_price', { valueAsNumber: true })}
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 sm:px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-touch text-responsive-base"
                 placeholder="0.00000"
               />
               {errors.take_profit_price && (
-                <p className="text-red-400 text-sm mt-1">{errors.take_profit_price.message}</p>
+                <p className="text-red-400 text-xs sm:text-sm mt-1">{errors.take_profit_price.message}</p>
               )}
             </div>
             
             <div>
-              <label className="block text-white font-medium mb-2">Position Size *</label>
+              <label className="block text-white font-medium mb-2 text-sm sm:text-base">Position Size *</label>
               <input
                 type="number"
                 step="0.01"
                 {...register('position_size', { valueAsNumber: true })}
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 sm:px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-touch text-responsive-base"
                 placeholder="1.00"
                 defaultValue="1.00"
               />
               {errors.position_size && (
-                <p className="text-red-400 text-sm mt-1">{errors.position_size.message}</p>
+                <p className="text-red-400 text-xs sm:text-sm mt-1">{errors.position_size.message}</p>
               )}
             </div>
           </div>
@@ -991,16 +991,16 @@ export const TradeLog: React.FC = React.memo(() => {
           {/* Lot Type for Forex Pairs */}
           {watch('symbol') && isForexPair(watch('symbol') || '') && (
             <div>
-              <label className="block text-white font-medium mb-2">Lot Type (Forex)</label>
+              <label className="block text-white font-medium mb-2 text-sm sm:text-base">Lot Type (Forex)</label>
               <select
                 {...register('lot_type')}
-                className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+                className="w-full px-3 sm:px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-touch text-responsive-base"
               >
                 <option value="standard">Standard Lot (100,000 units)</option>
                 <option value="mini">Mini Lot (10,000 units)</option>
                 <option value="micro">Micro Lot (1,000 units)</option>
               </select>
-              <p className="text-gray-400 text-xs mt-1">
+              <p className="text-gray-400 text-xs sm:text-sm mt-1">
                 Lot size affects P&L calculation for forex pairs
               </p>
             </div>
@@ -1011,10 +1011,10 @@ export const TradeLog: React.FC = React.memo(() => {
 
           {/* Exit Reason */}
           <div>
-            <label className="block text-white font-medium mb-2">Exit Reason *</label>
+            <label className="block text-white font-medium mb-2 text-sm sm:text-base">Exit Reason *</label>
             <select
               {...register('exit_reason')}
-              className="w-full px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full px-3 sm:px-4 py-3 bg-gray-800 border border-gray-600 rounded-lg text-white focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent input-touch text-responsive-base"
             >
               <option value="">Select exit reason</option>
               <option value="take_profit">Take Profit Hit</option>
@@ -1022,23 +1022,23 @@ export const TradeLog: React.FC = React.memo(() => {
               <option value="manual_exit">Manual Exit</option>
             </select>
             {errors.exit_reason && (
-              <p className="text-red-400 text-sm mt-1">{errors.exit_reason.message}</p>
+              <p className="text-red-400 text-xs sm:text-sm mt-1">{errors.exit_reason.message}</p>
             )}
           </div>
 
           {/* Mistakes */}
           <div>
-            <label className="block text-white font-medium mb-2">Mistakes (Optional)</label>
-            <div className="grid grid-cols-2 gap-2">
+            <label className="block text-white font-medium mb-2 text-sm sm:text-base">Mistakes (Optional)</label>
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-2 sm:gap-3">
               {MISTAKE_OPTIONS.map((mistake) => (
-                <label key={mistake} className="flex items-center space-x-2 cursor-pointer">
+                <label key={mistake} className="flex items-center space-x-2 sm:space-x-3 cursor-pointer p-2 sm:p-1 hover:bg-gray-800 rounded touch-target">
                   <input
                     type="checkbox"
                     checked={selectedMistakes.includes(mistake)}
                     onChange={() => toggleMistake(mistake)}
-                    className="rounded border-gray-600 bg-gray-800 text-red-500 focus:ring-red-500 focus:ring-offset-0"
+                    className="rounded border-gray-600 bg-gray-800 text-red-500 focus:ring-red-500 focus:ring-offset-0 w-4 h-4 sm:w-auto sm:h-auto"
                   />
-                  <span className="text-white text-sm">{mistake}</span>
+                  <span className="text-white text-sm sm:text-sm">{mistake}</span>
                 </label>
               ))}
             </div>
@@ -1049,11 +1049,11 @@ export const TradeLog: React.FC = React.memo(() => {
             <button
               type="submit"
               disabled={loading}
-              className="px-6 py-3 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 transition-colors"
+              className="px-4 sm:px-6 py-3 sm:py-4 bg-blue-600 text-white font-medium rounded-md hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed flex items-center space-x-2 transition-colors btn-touch text-responsive-base"
             >
               {loading ? (
                 <>
-                  <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white"></div>
+                  <div className="animate-spin rounded-full h-4 w-4 sm:h-5 sm:w-5 border-b-2 border-white"></div>
                   <span>{isEditMode ? 'Updating Trade...' : 'Logging Trade...'}</span>
                 </>
               ) : (

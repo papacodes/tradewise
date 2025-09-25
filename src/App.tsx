@@ -2,6 +2,7 @@ import React, { useEffect, Suspense } from 'react';
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
 import { Toaster } from 'sonner';
 import { AuthProvider } from './contexts/AuthContext';
+import { SubscriptionProvider } from './hooks/useSubscription';
 import { ProtectedRoute } from './components/ProtectedRoute';
 import ErrorBoundary from './components/ErrorBoundary';
 
@@ -39,7 +40,8 @@ function App() {
   return (
     <ErrorBoundary>
       <AuthProvider>
-        <Router>
+        <SubscriptionProvider>
+          <Router>
           <div className="min-h-screen bg-gray-900">
             <Toaster position="top-right" theme="dark" />
             <Suspense fallback={<LoadingSpinner />}>
@@ -124,6 +126,7 @@ function App() {
             </Suspense>
           </div>
         </Router>
+        </SubscriptionProvider>
       </AuthProvider>
     </ErrorBoundary>
   );

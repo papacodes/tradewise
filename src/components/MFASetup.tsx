@@ -201,7 +201,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onComplete, onCancel }) => {
               value={verificationCode}
               onChange={handleCodeChange}
               placeholder="000000"
-              className="w-full px-4 py-3 text-center text-2xl font-mono border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
+              className="w-full input-touch text-center text-2xl font-mono border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
               maxLength={6}
             />
             {error && (
@@ -216,7 +216,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onComplete, onCancel }) => {
           <div className="flex space-x-3">
             <button
               onClick={onCancel}
-              className="flex-1 px-4 py-2 text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors"
+              className="flex-1 btn-touch text-responsive-base text-gray-700 bg-gray-100 hover:bg-gray-200 rounded-lg font-medium transition-colors"
               disabled={isLoading}
             >
               Cancel
@@ -224,7 +224,7 @@ export const MFASetup: React.FC<MFASetupProps> = ({ onComplete, onCancel }) => {
             <button
               onClick={verifyMFA}
               disabled={isLoading || verificationCode.length !== 6}
-              className="flex-1 px-4 py-2 bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white rounded-lg font-medium transition-colors"
+              className="flex-1 btn-touch text-responsive-base bg-blue-600 hover:bg-blue-700 disabled:bg-gray-300 text-white rounded-lg font-medium transition-colors"
             >
               {isLoading ? 'Verifying...' : 'Verify & Enable'}
             </button>

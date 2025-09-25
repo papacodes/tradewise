@@ -238,7 +238,9 @@ export const useSupabaseCache = <T>(
   useEffect(() => {
     if (refetchInterval && refetchInterval > 0) {
       intervalRef.current = setInterval(() => {
-        fetchData();
+        if (mountedRef.current) {
+          fetchData();
+        }
       }, refetchInterval);
 
       return () => {
@@ -249,13 +251,15 @@ export const useSupabaseCache = <T>(
       };
     }
     return undefined;
-  }, [refetchInterval]); // Remove fetchData to prevent memory leaks
+  }, [refetchInterval, fetchData]); // Add fetchData back but with proper dependency management
 
   // Refetch on window focus
   useEffect(() => {
     if (refetchOnWindowFocus) {
       const handleFocus = () => {
-        fetchData();
+        if (mountedRef.current) {
+          fetchData();
+        }
       };
 
       window.addEventListener('focus', handleFocus);
@@ -264,7 +268,7 @@ export const useSupabaseCache = <T>(
       };
     }
     return undefined;
-  }, [refetchOnWindowFocus]); // Remove fetchData to prevent memory leaks
+  }, [refetchOnWindowFocus, fetchData]); // Add fetchData back but with proper dependency management
 
   // Cleanup on unmount
   useEffect(() => {
@@ -320,7 +324,10 @@ export const useCachedTrades = (userId?: string, accountIds?: string[]) => {
 export const useCachedAccounts = (userId?: string) => {
   // Stabilize the query function to prevent re-renders
   const queryFn = useCallback(async () => {
-    if (!userId) return { data: [], error: null };
+    if (!userId) {
+      // Don't make API call if userId is undefined
+      throw new Error('User ID is required');
+    }
     
     const result = await supabase
       .from('trading_accounts')
@@ -331,8 +338,11 @@ export const useCachedAccounts = (userId?: string) => {
     return result;
   }, [userId]);
 
-  return useSupabaseCache(
-    generateCacheKey('trading_accounts', { userId }),
+  // Don't use cache if userId is undefined
+  const shouldFetch = !!userId;
+  
+  const cacheResult = useSupabaseCache(
+    shouldFetch ? generateCacheKey('trading_accounts', { userId }) : 'disabled',
     queryFn,
     {
       ttl: 5 * 60 * 1000, // 5 minutes
@@ -340,6 +350,19 @@ export const useCachedAccounts = (userId?: string) => {
       // Remove refetchInterval to prevent automatic refreshing
     }
   );
+
+  // Return empty state when userId is not available
+  if (!shouldFetch) {
+    return {
+      data: [],
+      loading: false,
+      error: null,
+      refetch: async () => {},
+      invalidate: () => {}
+    };
+  }
+
+  return cacheResult;
 };
 
 export const useCachedUserProfile = (userId?: string) => {

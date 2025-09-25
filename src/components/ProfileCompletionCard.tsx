@@ -52,58 +52,58 @@ export const ProfileCompletionCard: React.FC<ProfileCompletionCardProps> = ({
   if (!userProfile?.phone_number) missingFields.push('Phone Number');
   if (!userProfile?.date_of_birth) missingFields.push('Date of Birth');
 
+  const totalFields = 4;
+  const completedFields = totalFields - missingFields.length;
+  const completionPercentage = Math.round((completedFields / totalFields) * 100);
+
   return (
-    <div className="bg-gray-800 border border-gray-600 rounded-lg p-6 mb-6">
-      <div className="flex items-start justify-between">
-        <div className="flex items-start space-x-4 flex-1">
+    <div className="bg-gray-800 border border-gray-600 rounded-lg p-4 sm:p-6 mb-6">
+      <div className="flex flex-col sm:flex-row sm:items-start sm:justify-between space-y-4 sm:space-y-0">
+        <div className="flex items-start space-x-3 sm:space-x-4 flex-1">
           <div className="flex-shrink-0">
-            <div className="w-12 h-12 bg-gray-700 rounded-lg flex items-center justify-center">
-              <User className="w-6 h-6 text-blue-400" />
+            <div className="w-10 h-10 sm:w-12 sm:h-12 bg-gray-700 rounded-lg flex items-center justify-center">
+              <User className="w-5 h-5 sm:w-6 sm:h-6 text-orange-400" />
             </div>
           </div>
-          <div className="flex-1">
-            <h3 className="text-lg font-semibold text-white mb-2">
+          <div className="flex-1 min-w-0">
+            <h3 className="text-base sm:text-lg font-semibold text-white mb-2 leading-tight">
               Complete Your Profile
             </h3>
-            <p className="text-gray-400 mb-3">
-              Help us provide you with a better trading experience by completing your profile information.
+            <p className="text-sm sm:text-base text-gray-400 mb-3 sm:mb-4 leading-relaxed">
+              Complete your profile to unlock all features and improve your trading experience. Missing information may limit some functionality.
             </p>
             <div className="mb-4">
-              <p className="text-sm text-gray-400 mb-2">Missing information:</p>
-              <div className="flex flex-wrap gap-2">
-                {missingFields.map((field) => (
-                  <span 
-                    key={field}
-                    className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-yellow-900 text-yellow-300"
-                  >
-                    {field}
-                  </span>
-                ))}
+              <div className="text-xs sm:text-sm text-gray-400 mb-2">
+                Missing fields: {missingFields.join(', ')}
               </div>
-            </div>
-            <div className="flex items-center space-x-3">
-              <button
-                onClick={handleCompleteClick}
-                className="flex items-center space-x-2 bg-[#1273d4] hover:bg-blue-600 text-white px-4 py-2 rounded-lg transition-colors duration-200 font-medium"
-              >
-                <span>Complete Profile</span>
-                <ArrowRight className="w-4 h-4" />
-              </button>
-              <button
-                onClick={handleDismiss}
-                className="text-gray-400 hover:text-gray-300 text-sm font-medium transition-colors duration-200"
-              >
-                Remind me later
-              </button>
+              <div className="w-full bg-gray-700 rounded-full h-2">
+                <div 
+                  className="bg-orange-500 h-2 rounded-full transition-all duration-300"
+                  style={{ width: `${completionPercentage}%` }}
+                />
+              </div>
+              <div className="text-xs text-gray-400 mt-1">
+                {completionPercentage}% complete
+              </div>
             </div>
           </div>
         </div>
-        <button
-          onClick={handleDismiss}
-          className="flex-shrink-0 p-1 text-gray-400 hover:text-gray-300 transition-colors duration-200"
-        >
-          <X className="w-5 h-5" />
-        </button>
+        <div className="flex items-start space-x-2 w-full sm:w-auto">
+          <button
+            onClick={handleCompleteClick}
+            className="flex items-center justify-center space-x-2 bg-orange-600 hover:bg-orange-700 text-white px-4 rounded-lg transition-colors duration-200 font-medium flex-1 sm:flex-none btn-touch text-responsive-base"
+          >
+            <span>Complete Profile</span>
+            <ArrowRight className="w-4 h-4" />
+          </button>
+          <button
+            onClick={handleDismiss}
+            className="text-gray-400 hover:text-white transition-colors duration-200 flex items-center justify-center touch-target"
+            title="Dismiss"
+          >
+            <X className="w-5 h-5" />
+          </button>
+        </div>
       </div>
     </div>
   );
