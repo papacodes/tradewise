@@ -4,7 +4,7 @@ import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
 import { supabase } from '../lib/supabase';
-import { Eye, EyeOff, Lock, CheckCircle, TrendingUp } from 'lucide-react';
+import { Eye, EyeOff, Lock, CheckCircle, TrendingUp, Menu } from 'lucide-react';
 
 const resetPasswordSchema = z.object({
   password: z.string()
@@ -122,30 +122,30 @@ export const ResetPassword: React.FC = () => {
     return (
       <div className="min-h-screen bg-gray-900 flex flex-col">
         {/* Header */}
-        <header className="flex items-center justify-between border-b border-gray-700 px-10 py-3">
-          <div className="flex items-center gap-4">
-            <TrendingUp className="w-8 h-8 text-blue-400" />
-            <h1 className="text-white text-lg font-bold">TradeTrackr</h1>
+        <header className="flex items-center justify-between border-b border-gray-700 px-4 sm:px-6 lg:px-10 py-3">
+          <div className="flex items-center gap-3 sm:gap-4">
+            <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 text-blue-400" />
+            <h1 className="text-white text-base sm:text-lg font-bold">TradeTrackr</h1>
           </div>
         </header>
 
         {/* Main Content */}
-        <main className="flex-1 flex flex-col items-center justify-center px-40 py-10">
-          <div className="w-full max-w-2xl text-center">
-            <div className="inline-flex items-center justify-center w-16 h-16 bg-red-600/20 rounded-full mb-4">
-              <Lock className="w-8 h-8 text-red-400" />
+        <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-8 lg:px-40 py-6 sm:py-8 lg:py-10">
+          <div className="w-full max-w-sm sm:max-w-md lg:max-w-2xl text-center">
+            <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-red-600/20 rounded-full mb-3 sm:mb-4">
+              <Lock className="w-6 h-6 sm:w-8 sm:h-8 text-red-400" />
             </div>
-            <h2 className="text-white text-3xl font-bold mb-3">
+            <h2 className="text-white text-xl sm:text-2xl lg:text-3xl font-bold mb-2 sm:mb-3">
               Invalid or Expired Link
             </h2>
-            <p className="text-gray-300 text-base mb-8">
+            <p className="text-gray-300 text-sm sm:text-base mb-6 sm:mb-8 px-2">
               {authError || 'This password reset link is invalid or has expired. Please request a new password reset.'}
             </p>
             
             <div className="space-y-4">
               <Link
                 to="/forgot-password"
-                className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg text-base font-bold transition-colors"
+                className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 sm:px-8 py-3 rounded-lg text-sm sm:text-base font-bold transition-colors min-h-[48px] touch-manipulation"
               >
                 Request New Reset Link
               </Link>
@@ -168,13 +168,14 @@ export const ResetPassword: React.FC = () => {
   return (
     <div className="min-h-screen bg-gray-900 flex flex-col">
       {/* Header */}
-      <header className="flex items-center justify-between border-b border-gray-700 px-10 py-3">
-        <div className="flex items-center gap-4">
-          <TrendingUp className="w-8 h-8 text-blue-400" />
-          <h1 className="text-white text-lg font-bold">TradeTrackr</h1>
+      <header className="flex items-center justify-between border-b border-gray-700 px-4 sm:px-6 lg:px-10 py-3">
+        <div className="flex items-center gap-3 sm:gap-4">
+          <TrendingUp className="w-6 h-6 sm:w-8 sm:h-8 text-blue-400" />
+          <h1 className="text-white text-base sm:text-lg font-bold">TradeTrackr</h1>
         </div>
-        <div className="flex items-center gap-8">
-          <nav className="flex items-center gap-9">
+        <div className="flex items-center gap-4 sm:gap-8">
+          {/* Desktop Navigation */}
+          <nav className="hidden md:flex items-center gap-6 lg:gap-9">
             <Link to="/" className="text-white text-sm font-medium hover:text-blue-400 transition-colors">
               Home
             </Link>
@@ -190,34 +191,39 @@ export const ResetPassword: React.FC = () => {
           </nav>
           <Link
             to="/register"
-            className="bg-blue-600 hover:bg-blue-700 text-white px-4 py-2 rounded-lg text-sm font-bold transition-colors"
+            className="bg-blue-600 hover:bg-blue-700 text-white px-3 sm:px-4 py-2 rounded-lg text-xs sm:text-sm font-bold transition-colors"
           >
-            Get Started
+            <span className="hidden sm:inline">Get Started</span>
+            <span className="sm:hidden">Sign Up</span>
           </Link>
+          {/* Mobile Menu Button */}
+          <button className="md:hidden text-white p-1">
+            <Menu className="w-5 h-5" />
+          </button>
         </div>
       </header>
 
       {/* Main Content */}
-      <main className="flex-1 flex flex-col items-center justify-center px-40 py-10">
-        <div className="w-full max-w-2xl">
+      <main className="flex-1 flex flex-col items-center justify-center px-4 sm:px-8 lg:px-40 py-6 sm:py-8 lg:py-10">
+        <div className="w-full max-w-sm sm:max-w-md lg:max-w-2xl">
           {!isSuccess ? (
             <>
-              <div className="text-center mb-8">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-blue-600/20 rounded-full mb-4">
-                  <Lock className="w-8 h-8 text-blue-400" />
+              <div className="text-center mb-6 sm:mb-8">
+                <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-blue-600/20 rounded-full mb-3 sm:mb-4">
+                  <Lock className="w-6 h-6 sm:w-8 sm:h-8 text-blue-400" />
                 </div>
-                <h2 className="text-white text-3xl font-bold mb-3">
+                <h2 className="text-white text-xl sm:text-2xl lg:text-3xl font-bold mb-2 sm:mb-3">
                   Set New Password
                 </h2>
-                <p className="text-gray-300 text-base">
+                <p className="text-gray-300 text-sm sm:text-base px-2">
                   Enter your new password below. Make sure it's strong and secure.
                 </p>
               </div>
 
-              <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
+              <form onSubmit={handleSubmit(onSubmit)} className="space-y-4 sm:space-y-6">
                 {/* Password Field */}
                 <div>
-                  <div className={`bg-gray-800 rounded-lg p-4 flex items-center ${errors.password ? 'border border-red-500/50' : ''}`}>
+                  <div className={`bg-gray-800 rounded-lg p-4 flex items-center min-h-[48px] ${errors.password ? 'border border-red-500/50' : ''}`}>
                     <input
                       {...register('password')}
                       type={showPassword ? 'text' : 'password'}
@@ -228,7 +234,7 @@ export const ResetPassword: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setShowPassword(!showPassword)}
-                      className="text-gray-500 hover:text-gray-300 ml-2"
+                      className="text-gray-500 hover:text-gray-300 ml-2 p-1 min-h-[44px] min-w-[44px] flex items-center justify-center"
                       disabled={isLoading}
                     >
                       {showPassword ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -279,7 +285,7 @@ export const ResetPassword: React.FC = () => {
 
                 {/* Confirm Password Field */}
                 <div>
-                  <div className={`bg-gray-800 rounded-lg p-4 flex items-center ${errors.confirmPassword ? 'border border-red-500/50' : ''}`}>
+                  <div className={`bg-gray-800 rounded-lg p-4 flex items-center min-h-[48px] ${errors.confirmPassword ? 'border border-red-500/50' : ''}`}>
                     <input
                       {...register('confirmPassword')}
                       type={showConfirmPassword ? 'text' : 'password'}
@@ -290,7 +296,7 @@ export const ResetPassword: React.FC = () => {
                     <button
                       type="button"
                       onClick={() => setShowConfirmPassword(!showConfirmPassword)}
-                      className="text-gray-500 hover:text-gray-300 ml-2"
+                      className="text-gray-500 hover:text-gray-300 ml-2 p-1 min-h-[44px] min-w-[44px] flex items-center justify-center"
                       disabled={isLoading}
                     >
                       {showConfirmPassword ? <EyeOff size={20} /> : <Eye size={20} />}
@@ -303,7 +309,7 @@ export const ResetPassword: React.FC = () => {
 
                 {/* Error Message */}
                 {errors.root && (
-                  <div className="bg-red-900/20 border border-red-500/50 rounded-lg p-3">
+                  <div className="bg-red-900/20 border border-red-500/50 rounded-lg p-3 sm:p-4">
                     <p className="text-red-400 text-sm">{errors.root.message}</p>
                   </div>
                 )}
@@ -313,7 +319,7 @@ export const ResetPassword: React.FC = () => {
                   <button
                     type="submit"
                     disabled={isLoading}
-                    className="bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:cursor-not-allowed text-white px-56 py-3 rounded-lg text-base font-bold transition-colors"
+                    className="w-full bg-blue-600 hover:bg-blue-700 disabled:bg-blue-800 disabled:cursor-not-allowed text-white px-4 sm:px-6 py-3 rounded-lg text-sm sm:text-base font-bold transition-colors min-h-[48px] touch-manipulation"
                   >
                     {isLoading ? 'Updating Password...' : 'Update Password'}
                   </button>
@@ -324,20 +330,20 @@ export const ResetPassword: React.FC = () => {
             <>
               {/* Success State */}
               <div className="text-center">
-                <div className="inline-flex items-center justify-center w-16 h-16 bg-green-600/20 rounded-full mb-4">
-                  <CheckCircle className="w-8 h-8 text-green-400" />
+                <div className="inline-flex items-center justify-center w-12 h-12 sm:w-16 sm:h-16 bg-green-600/20 rounded-full mb-3 sm:mb-4">
+                  <CheckCircle className="w-6 h-6 sm:w-8 sm:h-8 text-green-400" />
                 </div>
-                <h2 className="text-white text-3xl font-bold mb-3">
+                <h2 className="text-white text-xl sm:text-2xl lg:text-3xl font-bold mb-2 sm:mb-3">
                   Password Updated Successfully
                 </h2>
-                <p className="text-gray-300 text-base mb-6">
+                <p className="text-gray-300 text-sm sm:text-base mb-6 px-2">
                   Your password has been updated successfully. You will be redirected to the login page shortly.
                 </p>
                 
                 <div className="space-y-4">
                   <Link
                     to="/login"
-                    className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-8 py-3 rounded-lg text-base font-bold transition-colors"
+                    className="inline-block bg-blue-600 hover:bg-blue-700 text-white px-6 sm:px-8 py-3 rounded-lg text-sm sm:text-base font-bold transition-colors min-h-[48px] touch-manipulation"
                   >
                     Go to Login
                   </Link>
